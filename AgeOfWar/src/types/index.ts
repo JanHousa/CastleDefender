@@ -8,8 +8,10 @@ export interface Unit {
   position: number;
   attackType: 'melee' | 'range';
   range: number;
-  addedToQueueAt?: number; // Přidáno pro správu času přidání do fronty
+  isAttacking?: boolean; // Add this line to include the attacking state
+  addedToQueueAt?: number;
 }
+
 
 export interface GameState {
   units: Unit[];

@@ -83,6 +83,7 @@ const Game: React.FC = () => {
   return () => clearInterval(goldInterval);
 }, []);
 
+/*
   // Move enemy units towards the player's base
   useEffect(() => {
     
@@ -100,7 +101,7 @@ const Game: React.FC = () => {
     return () => clearInterval(moveUnitsInterval);
   }, []);
 
-
+*/
   // Handle the purchase of a tower and place it in the selected slot
   const handleTowerPurchase = (tower: DefenseTower, slotId: number) => {
     const isSlotOccupied = gameState.defenseTowers.some((t) => t.slotId === slotId);
@@ -122,9 +123,19 @@ const Game: React.FC = () => {
 
   
   // Update the game state with new values
-  const updateGameState = (newStatePartial: Partial<GameState>) => {
-    setGameState(currentState => ({ ...currentState, ...newStatePartial }));
-  };
+// V Game komponentě
+const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) => GameState | Partial<GameState>)) => void = (newStateOrUpdater) => {
+  if (typeof newStateOrUpdater === 'function') {
+    // Pokud je to funkce, použijte ji k aktualizaci stavu
+    setGameState((prevState) => {
+      const result = newStateOrUpdater(prevState);
+      return {...prevState, ...result};
+    });
+  } else {
+    // Pokud je to přímo objekt GameState, použijte jej k přímé aktualizaci stavu
+    setGameState(newStateOrUpdater);
+  }
+};
 
 
  // Sell a tower that's placed in a specific slot
@@ -192,7 +203,7 @@ const spawnUnit = (unitType: string) => {
     alert('Nedostatek zlata nebo chybný typ jednotky!');
   }
 };
-  
+  /*
 // Pohyb jednotek
 useEffect(() => {
   const moveUnits = () => {
@@ -210,7 +221,7 @@ useEffect(() => {
 
   return () => clearInterval(intervalId);
 }, [gameState.activeUnits.length]); // Spustí se znovu, pokud se změní počet aktivních jednotek
-
+*/
   // Evoluce
   const evolve = () => {
     const costOfEvolution = 100;
@@ -270,12 +281,8 @@ useEffect(() => {
         ))}
       </footer>
 
-        <BattlefieldComponent gameState={gameState} updateGameState={setGameState} />
-                <EnemyAIComponent
-          gameState={gameState}
-          updateGameState={setGameState} // Make sure to use a method that correctly merges the state
-          unitsByEvolution={unitsByEvolution}
-        />
+         <BattlefieldComponent gameState={gameState} updateGameState={updateGameState} />
+      <EnemyAIComponent gameState={gameState} updateGameState={setGameState} unitsByEvolution={unitsByEvolution} />
 
         <div className="player-base">
   {/* Assuming only one slot for simplicity; adjust as needed for multiple slots */}

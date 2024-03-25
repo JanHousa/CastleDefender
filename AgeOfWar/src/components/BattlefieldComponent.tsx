@@ -1,61 +1,73 @@
 import React, { useEffect } from 'react';
 import { GameState, Unit } from '../types';
-import UnitComponent from '../components/UnitComponent';
+import UnitComponent from './UnitComponent';
+
+interface BattlefieldProps {
+  gameState: GameState;
+  // Toto musí být konzistentní s definicí v UnitComponent
+  updateGameState: (updateFunction: (prevGameState: GameState) => Partial<GameState>) => void;
+}
 
 
-const BattlefieldComponent = ({ gameState, updateGameState }) => {
-  // Function to handle unit movements and attacks
-  const handleCombatAndMovement = () => {
-    let newGameState = { ...gameState };
-
-    // Process each active unit
-    newGameState.activeUnits = gameState.activeUnits.map(unit => {
-      // Find an enemy within range
-      const targetIndex = gameState.enemyUnits.findIndex(
-        enemy => Math.abs(enemy.position - unit.position) <= unit.range
-      );
-
-      if (targetIndex !== -1) {
-        // Enemy is within range, attack
-        const enemy = gameState.enemyUnits[targetIndex];
-        const updatedEnemy = { ...enemy, health: enemy.health - unit.attack };
-
-        // Check if the enemy is defeated
-        if (updatedEnemy.health <= 0) {
-          newGameState.enemyUnits = newGameState.enemyUnits.filter((_, i) => i !== targetIndex);
-        } else {
-          newGameState.enemyUnits[targetIndex] = updatedEnemy;
-        }
-
-        // Here, you could set the unit's status to "attacking"
-        return { ...unit /*, status: "attacking" */ };
-      } else {
-        // No enemy in range, move the unit forward
-        // This simplistic movement logic should be replaced with your game's logic
-        return { ...unit, position: unit.position + 1 };
-      }
-    });
-
-    // Update the global game state with new positions and health
-    updateGameState(newGameState);
-  };
-
+const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
-    const interval = setInterval(() => {
-      handleCombatAndMovement();
-    }, 1000); // Adjust as necessary for your game's pace
+    const intervalId = setInterval(() => {
+      updateGameState(prevGameState => {
+        const newActiveUnits = prevGameState.activeUnits.map(unit => {
+          // Vyhledávání nepřátelské jednotky v dosahu útoku
+          const enemyInRange = prevGameState.enemyUnits.find(enemyUnit =>
+            Math.abs(enemyUnit.position - unit.position) <= unit.range);
 
-    return () => clearInterval(interval);
-  }, [gameState, updateGameState]);
+          // Pokud je nepřítel v dosahu, nastavíme "isAttacking" na true
+          if (enemyInRange) {
+            return { ...unit, isAttacking: true };
+          } else {
+            // Jinak se jednotka pohybuje (pokud již neútočí)
+            const newPosition = !unit.isAttacking ? unit.position + 5 : unit.position;
+            return { ...unit, position: newPosition, isAttacking: false };
+          }
+        });
+
+        const newEnemyUnits = prevGameState.enemyUnits.map(unit => {
+          // Analogická logika pro nepřátelské jednotky
+          const activeUnitInRange = prevGameState.activeUnits.find(activeUnit =>
+            Math.abs(activeUnit.position - unit.position) <= unit.range);
+          
+          if (activeUnitInRange) {
+            return { ...unit, isAttacking: true };
+          } else {
+            const newPosition = !unit.isAttacking ? unit.position - 5 : unit.position;
+            return { ...unit, position: newPosition, isAttacking: false };
+          }
+        });
+
+        return { activeUnits: newActiveUnits, enemyUnits: newEnemyUnits };
+      });
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, [updateGameState]);
+  
 
   return (
     <div className="battlefield">
-      {gameState.activeUnits.map(unit => (
-        // Assuming UnitComponent is a component that renders the unit
-        <UnitComponent key={unit.id} unit={unit} />
+      {gameState.activeUnits.map((unit) => (
+        <UnitComponent
+        key={unit.id}
+        unit={unit}
+        updateGameState={updateGameState}
+        isEnemy={false}
+        isAttacking={!!unit.isAttacking} // Převádí undefined na false
+      />
       ))}
-      {gameState.enemyUnits.map(unit => (
-        <UnitComponent key={unit.id} unit={unit} isEnemy={true} />
+      {gameState.enemyUnits.map((unit) => (
+       <UnitComponent
+       key={unit.id}
+       unit={unit}
+       updateGameState={updateGameState}
+       isEnemy={true}
+       isAttacking={!!unit.isAttacking} // Převádí undefined na false
+     />
       ))}
     </div>
   );
