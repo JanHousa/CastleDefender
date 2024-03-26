@@ -1,76 +1,64 @@
 import React, { useEffect } from 'react';
-import { GameState, Unit } from '../types';
+import { GameState, Unit } from '../types'; // Předpokládejme definici typů
 import UnitComponent from './UnitComponent';
 
 interface BattlefieldProps {
   gameState: GameState;
-  // Toto musí být konzistentní s definicí v UnitComponent
-  updateGameState: (updateFunction: (prevGameState: GameState) => Partial<GameState>) => void;
+  updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) => GameState | Partial<GameState>)) => void;
 }
-
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      updateGameState(prevGameState => {
-        const newActiveUnits = prevGameState.activeUnits.map(unit => {
-          // Vyhledávání nepřátelské jednotky v dosahu útoku
-          const enemyInRange = prevGameState.enemyUnits.find(enemyUnit =>
-            Math.abs(enemyUnit.position - unit.position) <= unit.range);
-
-          // Pokud je nepřítel v dosahu, nastavíme "isAttacking" na true
-          if (enemyInRange) {
-            return { ...unit, isAttacking: true };
-          } else {
-            // Jinak se jednotka pohybuje (pokud již neútočí)
-            const newPosition = !unit.isAttacking ? unit.position + 5 : unit.position;
-            return { ...unit, position: newPosition, isAttacking: false };
-          }
-        });
-
-        const newEnemyUnits = prevGameState.enemyUnits.map(unit => {
-          // Analogická logika pro nepřátelské jednotky
-          const activeUnitInRange = prevGameState.activeUnits.find(activeUnit =>
-            Math.abs(activeUnit.position - unit.position) <= unit.range);
-          
-          if (activeUnitInRange) {
-            return { ...unit, isAttacking: true };
-          } else {
-            const newPosition = !unit.isAttacking ? unit.position - 5 : unit.position;
-            return { ...unit, position: newPosition, isAttacking: false };
-          }
-        });
-
-        return { activeUnits: newActiveUnits, enemyUnits: newEnemyUnits };
+    const combatInterval = setInterval(() => {
+      // Aktualizace pozic a stavu útoku jednotek
+      let activeUnitsUpdated = gameState.activeUnits.map(unit => {
+        // Výpočet pohybu nebo útoku pro každou aktivní jednotku
+        return updateUnitPositionAndAttack(unit, gameState.enemyUnits);
       });
-    }, 100);
 
-    return () => clearInterval(intervalId);
-  }, [updateGameState]);
-  
+      let enemyUnitsUpdated = gameState.enemyUnits.map(unit => {
+        // Výpočet pohybu nebo útoku pro každou nepřátelskou jednotku
+        return updateUnitPositionAndAttack(unit, gameState.activeUnits);
+      });
+
+      // Odstranění jednotek s nulovým nebo záporným zdravím
+      activeUnitsUpdated = activeUnitsUpdated.filter(unit => unit.health > 0);
+      enemyUnitsUpdated = enemyUnitsUpdated.filter(unit => unit.health > 0);
+
+      // Aktualizace hry
+      updateGameState({
+        ...gameState,
+        activeUnits: activeUnitsUpdated,
+        enemyUnits: enemyUnitsUpdated,
+      });
+    }, 100); // Interval aktualizace
+
+    return () => clearInterval(combatInterval);
+  }, [gameState, updateGameState]);
 
   return (
     <div className="battlefield">
       {gameState.activeUnits.map((unit) => (
-        <UnitComponent
-        key={unit.id}
-        unit={unit}
-        updateGameState={updateGameState}
-        isEnemy={false}
-        isAttacking={!!unit.isAttacking} // Převádí undefined na false
-      />
+        <UnitComponent key={unit.id} unit={unit} isEnemy={false} isAttacking={unit.isAttacking || false} />
       ))}
       {gameState.enemyUnits.map((unit) => (
-       <UnitComponent
-       key={unit.id}
-       unit={unit}
-       updateGameState={updateGameState}
-       isEnemy={true}
-       isAttacking={!!unit.isAttacking} // Převádí undefined na false
-     />
+        <UnitComponent key={unit.id} unit={unit} isEnemy={true} isAttacking={unit.isAttacking || false} />
       ))}
     </div>
   );
 };
 
 export default BattlefieldComponent;
+
+function updateUnitPositionAndAttack(unit: Unit, opponents: Unit[]): Unit {
+  const target = opponents.find(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
+
+  if (target) {
+    // Útok (poznámka: aktualizace health by měla proběhnout globálně, ne zde)
+    return { ...unit, isAttacking: true };
+  } else {
+    // Enemy units (isEnemy == true) jdou doleva (-5), přátelské jednotky jdou doprava (+5)
+    const newPosition = unit.position + (unit.isEnemy ? -5 : 5); 
+    return { ...unit, position: newPosition, isAttacking: false };
+  }
+}

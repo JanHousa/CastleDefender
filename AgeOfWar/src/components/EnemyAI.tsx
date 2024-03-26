@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { GameState, Unit, UnitsByEvolution } from '../types';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
 
 function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: number): Unit | null {
   const possibleUnits = unitsByEvolution[evolutionLevel];
@@ -7,7 +8,12 @@ function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: n
     console.log("No units available for spawning.");
     return null;
   }
-  return possibleUnits[Math.floor(Math.random() * possibleUnits.length)];
+  // Vybrat jednotku a přiřadit jí uuid
+  const unitTemplate = possibleUnits[Math.floor(Math.random() * possibleUnits.length)];
+  return {
+    ...unitTemplate,
+    id: uuidv4(), // Přidání UUID při vytváření jednotky
+  };
 }
 
 const EnemyAIComponent: React.FC<{
@@ -20,20 +26,22 @@ const EnemyAIComponent: React.FC<{
       const unitToSpawn = chooseUnitToSpawn(unitsByEvolution, gameState.enemyEvolutionLevel);
       if (unitToSpawn) {
         updateGameState((prevState: GameState): GameState => {
-          const newEnemyUnits = [...prevState.enemyUnits, { ...unitToSpawn, position: 1650 }];
+          // Přiřazení počáteční pozice a přidání do seznamu nepřátelských jednotek
+          const newEnemyUnit = { ...unitToSpawn, position: 1650, id: uuidv4() }; // Zde je přidáno UUID
+          const newEnemyUnits = [...prevState.enemyUnits, newEnemyUnit];
           return {
             ...prevState,
             enemyUnits: newEnemyUnits,
-            enemyGold: prevState.enemyGold - unitToSpawn.cost, // Assuming this operation makes sense for your game logic
+            enemyGold: prevState.enemyGold - unitToSpawn.cost,
           };
         });
       }
-    }, 7000);
+    }, 7000); // Můžete upravit interval spawnování dle potřeby
 
     return () => clearInterval(intervalId);
   }, [gameState.enemyEvolutionLevel, gameState.enemyGold, unitsByEvolution, updateGameState]);
 
-  return null; // This component doesn't render anything
+  return null; // Tato komponenta nic nevykresluje
 };
 
 export default EnemyAIComponent;

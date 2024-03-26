@@ -9,23 +9,25 @@ import UnitsList from './UnitsList';
 import TowerSelectionComponent from './TowerSelection'; // Předpokládá, že máte tuto komponentu
 import DefenseSlot from './DefenseSlot'; // Adjust the path as necessary
 import DefenseTowerComponent from './DefenseTower'; // Adjust the path as necessary
+import { v4 as uuidv4 } from 'uuid';
 
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
     { id: 1, type: 'Knight', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/rytir.png', position: 0, attackType: 'melee', range: 100},
-    { id: 2, type: 'Archer', health: 80, attack: 45, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 100 },
-    { id: 3, type: 'Assasin', health: 200, attack: 35, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 100 },
+    { id: 2, type: 'Archer', health: 80, attack: 45, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 200},
+    { id: 3, type: 'Assasin', health: 200, attack: 35, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 100},
     // Další jednotky...
   ],
   2: [
-    { id: 1, type: 'Soldier', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/garda.png', position: 0, attackType: 'melee', range: 100},
-    { id: 2, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100 },
-    { id: 2, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100 },
+    { id: 4, type: 'Soldier', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/garda.png', position: 0, attackType: 'melee', range: 100},
+    { id: 5, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100 },
+    { id: 6, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100 },
     // Další jednotky...
   ],
   // Další úrovně...
 };
+
 
 const availableTowers: DefenseTower[] = [
   { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 150, position: 0, imageUrl: '/src/assets/images/catapult.png' },
@@ -163,7 +165,7 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
         const unitToSpawn = gameState.unitQueue[0];
         setGameState(prevState => ({
           ...prevState,
-          activeUnits: [...prevState.activeUnits, { ...unitToSpawn, position: 0 }],
+          activeUnits: [...prevState.activeUnits, { ...unitToSpawn, id: uuidv4(), position: 0 }], // Přidáváme UUID při spawnování
           unitQueue: prevState.unitQueue.slice(1),
           lastSpawnTime: now,
         }));
@@ -171,14 +173,14 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
     }, 500);
     return () => clearInterval(intervalId);
   }, [gameState.unitQueue, gameState.lastSpawnTime]);
-
+  
   const handleTowerSelection = (towerOrAction: DefenseTower | 'sell', slotId: number): void => {
     if (towerOrAction === 'sell') {
       sellTower(slotId);
     } else {
       handleTowerPurchase(towerOrAction, slotId);
     }
-};
+  };
 
 
   // Animace by měla být řešena přímo v CSS s vhodným použitím React state a style props.

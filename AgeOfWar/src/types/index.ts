@@ -1,3 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
+
+
 export interface Unit {
   id: number;
   type: string;
@@ -8,8 +11,8 @@ export interface Unit {
   position: number;
   attackType: 'melee' | 'range';
   range: number;
-  isAttacking?: boolean; // Add this line to include the attacking state
-  addedToQueueAt?: number;
+  isEnemy?: boolean;
+  isAttacking?: boolean;
 }
 
 
