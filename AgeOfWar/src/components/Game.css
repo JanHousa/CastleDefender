@@ -264,3 +264,18 @@
   border: 3px solid #000000; /* Just for visibility */
   /* Add more styles as needed */
 }
+
+.hp-bar-container {
+  width: 50%;
+  background-color: rgb(215, 0, 0);
+  height: 10px; /* Výška HP baru */
+  margin-bottom: 5px; /* Odstup od obrázku jednotky */
+  margin-left: 20px;
+  border-radius: 10px;
+}
+
+.hp-bar {
+  border-radius: 10px;
+  height: 100%;
+  background-color: #4CAF50; /* Zelená barva znamená zdraví */
+}

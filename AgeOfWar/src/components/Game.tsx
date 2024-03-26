@@ -15,8 +15,8 @@ import { v4 as uuidv4 } from 'uuid';
 const unitsByEvolution: UnitsByEvolution = {
   1: [
     { id: 1, type: 'Knight', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/rytir.png', position: 0, attackType: 'melee', range: 100},
-    { id: 2, type: 'Archer', health: 80, attack: 45, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 200},
-    { id: 3, type: 'Assasin', health: 200, attack: 35, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 100},
+    { id: 2, type: 'Archer', health: 100, attack: 45, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 200},
+    { id: 3, type: 'Assasin', health: 100, attack: 35, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 100},
     // Další jednotky...
   ],
   2: [

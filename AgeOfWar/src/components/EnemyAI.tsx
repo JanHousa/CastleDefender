@@ -16,6 +16,7 @@ function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: n
   };
 }
 
+// Ve vaší EnemyAIComponent
 const EnemyAIComponent: React.FC<{
   gameState: GameState;
   updateGameState: (updateFunction: (prevState: GameState) => GameState) => void;
@@ -26,8 +27,8 @@ const EnemyAIComponent: React.FC<{
       const unitToSpawn = chooseUnitToSpawn(unitsByEvolution, gameState.enemyEvolutionLevel);
       if (unitToSpawn) {
         updateGameState((prevState: GameState): GameState => {
-          // Přiřazení počáteční pozice a přidání do seznamu nepřátelských jednotek
-          const newEnemyUnit = { ...unitToSpawn, position: 1650, id: uuidv4() }; // Zde je přidáno UUID
+          // Přiřazení počáteční pozice, přidání UUID a nastavení isEnemy na true
+          const newEnemyUnit = { ...unitToSpawn, position: 1650, id: uuidv4(), isEnemy: true };
           const newEnemyUnits = [...prevState.enemyUnits, newEnemyUnit];
           return {
             ...prevState,
@@ -36,7 +37,7 @@ const EnemyAIComponent: React.FC<{
           };
         });
       }
-    }, 7000); // Můžete upravit interval spawnování dle potřeby
+    }, 7000);
 
     return () => clearInterval(intervalId);
   }, [gameState.enemyEvolutionLevel, gameState.enemyGold, unitsByEvolution, updateGameState]);
@@ -45,3 +46,4 @@ const EnemyAIComponent: React.FC<{
 };
 
 export default EnemyAIComponent;
+

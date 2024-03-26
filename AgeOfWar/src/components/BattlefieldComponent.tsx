@@ -11,15 +11,15 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
   useEffect(() => {
     const combatInterval = setInterval(() => {
       // Aktualizace pozic a stavu útoku jednotek
-      let activeUnitsUpdated = gameState.activeUnits.map(unit => {
-        // Výpočet pohybu nebo útoku pro každou aktivní jednotku
-        return updateUnitPositionAndAttack(unit, gameState.enemyUnits);
-      });
+      let activeUnitsUpdated = gameState.activeUnits.map(unit =>
+        // Předání spojeneckých jednotek pro aktivní jednotky
+        updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits)
+      );
 
-      let enemyUnitsUpdated = gameState.enemyUnits.map(unit => {
-        // Výpočet pohybu nebo útoku pro každou nepřátelskou jednotku
-        return updateUnitPositionAndAttack(unit, gameState.activeUnits);
-      });
+      let enemyUnitsUpdated = gameState.enemyUnits.map(unit =>
+        // Předání spojeneckých jednotek pro nepřátelské jednotky
+        updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits)
+      );
 
       // Odstranění jednotek s nulovým nebo záporným zdravím
       activeUnitsUpdated = activeUnitsUpdated.filter(unit => unit.health > 0);
@@ -50,15 +50,35 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 
 export default BattlefieldComponent;
 
-function updateUnitPositionAndAttack(unit: Unit, opponents: Unit[]): Unit {
+
+
+// Funkce pro boj mezi jednotkami
+function fight(unit: Unit, target: Unit): boolean {
+  target.health -= unit.attack;
+  if (target.health <= 0) {
+    return true;
+  }
+  return false;
+}
+
+// Funkce pro aktualizaci pozice a útok jednotek
+function updateUnitPositionAndAttack(unit: Unit, opponents: Unit[], allies: Unit[]): Unit {
   const target = opponents.find(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
 
   if (target) {
-    // Útok (poznámka: aktualizace health by měla proběhnout globálně, ne zde)
+    const isKilled = fight(unit, target);
+    if (isKilled) {
+      const index = opponents.indexOf(target);
+      if (index !== -1) {
+        opponents.splice(index, 1);
+      }
+      const newPosition = unit.position + (unit.isEnemy ? -5 : 5);
+      return { ...unit, position: newPosition, isAttacking: false };
+    }
     return { ...unit, isAttacking: true };
   } else {
-    // Enemy units (isEnemy == true) jdou doleva (-5), přátelské jednotky jdou doprava (+5)
-    const newPosition = unit.position + (unit.isEnemy ? -5 : 5); 
+    const moveDirection = unit.isEnemy ? -1 : 1;
+    const newPosition = unit.position + moveDirection * (5 || 5); // Předpokládáme výchozí rychlost pohybu 5, pokud není specifikováno
     return { ...unit, position: newPosition, isAttacking: false };
   }
 }
