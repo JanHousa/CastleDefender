@@ -4,34 +4,78 @@ import UnitComponent from './UnitComponent';
 
 interface BattlefieldProps {
   gameState: GameState;
-  updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) => GameState | Partial<GameState>)) => void;
+  updateGameState: (updateFunction: (prevState: GameState) => Partial<GameState>) => void;
 }
+
+function fight(unit: Unit, target: Unit, currentTime: number): { attacked: boolean; newHealth: number } {
+  if (currentTime - unit.lastAttackTime >= unit.attackSpeed) {
+    const newHealth = target.health - unit.attack;
+    unit.lastAttackTime = currentTime;
+    return { attacked: true, newHealth: Math.max(0, newHealth) }; // Zajišťujeme, že zdraví nebude záporné
+  }
+  return { attacked: false, newHealth: target.health };
+}
+
+function updateUnitPositionAndAttack(
+  unit: Unit,
+  opponents: Unit[],
+  allies: Unit[],
+  currentTime: number,
+  updateGameState: (update: Partial<GameState>) => void // Přidáváme tuto funkci pro aktualizaci stavu hry
+): Unit {
+  const targetIndex = opponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
+
+  if (targetIndex !== -1) {
+    const target = opponents[targetIndex];
+    const { attacked, newHealth } = fight(unit, target, currentTime);
+
+    if (attacked) {
+      if (newHealth <= 0) {
+        opponents.splice(targetIndex, 1); // Odstraňujeme jednotku, pokud její zdraví klesne na 0 nebo méně
+      } else {
+        opponents[targetIndex].health = newHealth; // Aktualizujeme zdraví jednotky, pokud je stále živá
+      }
+      // Požádáme o aktualizaci stavu hry s novými daty o jednotkách
+      updateGameState({ activeUnits: [...opponents], enemyUnits: [...allies] });
+      return { ...unit, isAttacking: true };
+    }
+  } else {
+    const moveDirection = unit.isEnemy ? -5 : 5;
+    const newPosition = unit.position + moveDirection;
+
+    const isBlocked = allies.some(ally => Math.abs(ally.position - unit.position) < 100 && ally.id !== unit.id);
+
+    if (!isBlocked) {
+      return { ...unit, position: newPosition, isAttacking: false };
+    }
+  }
+
+  return { ...unit, isAttacking: false };
+}
+
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
     const combatInterval = setInterval(() => {
-      // Aktualizace pozic a stavu útoku jednotek
-      let activeUnitsUpdated = gameState.activeUnits.map(unit =>
-        // Předání spojeneckých jednotek pro aktivní jednotky
-        updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits)
-      );
+      const currentTime = Date.now();
 
-      let enemyUnitsUpdated = gameState.enemyUnits.map(unit =>
-        // Předání spojeneckých jednotek pro nepřátelské jednotky
-        updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits)
-      );
+      // Vypočítejte aktualizace pro aktivní a nepřátelské jednotky
+      // Filtrujeme návratové hodnoty, aby se odstranily null hodnoty a zajistilo, že pole bude obsahovat pouze Unit[]
+      let activeUnitsUpdated = gameState.activeUnits
+        .map(unit => updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits, currentTime))
+        .filter((unit): unit is Unit => unit !== null);
 
-      // Odstranění jednotek s nulovým nebo záporným zdravím
-      activeUnitsUpdated = activeUnitsUpdated.filter(unit => unit.health > 0);
-      enemyUnitsUpdated = enemyUnitsUpdated.filter(unit => unit.health > 0);
+      let enemyUnitsUpdated = gameState.enemyUnits
+        .map(unit => updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits, currentTime))
+        .filter((unit): unit is Unit => unit !== null);
 
-      // Aktualizace hry
-      updateGameState({
-        ...gameState,
+      // Aktualizace globálního stavu hry s novými poli jednotek
+      updateGameState(prevState => ({
+        ...prevState,
         activeUnits: activeUnitsUpdated,
         enemyUnits: enemyUnitsUpdated,
-      });
-    }, 100); // Interval aktualizace
+      }));
+    }, 100);
 
     return () => clearInterval(combatInterval);
   }, [gameState, updateGameState]);
@@ -49,36 +93,3 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 };
 
 export default BattlefieldComponent;
-
-
-
-// Funkce pro boj mezi jednotkami
-function fight(unit: Unit, target: Unit): boolean {
-  target.health -= unit.attack;
-  if (target.health <= 0) {
-    return true;
-  }
-  return false;
-}
-
-// Funkce pro aktualizaci pozice a útok jednotek
-function updateUnitPositionAndAttack(unit: Unit, opponents: Unit[], allies: Unit[]): Unit {
-  const target = opponents.find(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
-
-  if (target) {
-    const isKilled = fight(unit, target);
-    if (isKilled) {
-      const index = opponents.indexOf(target);
-      if (index !== -1) {
-        opponents.splice(index, 1);
-      }
-      const newPosition = unit.position + (unit.isEnemy ? -5 : 5);
-      return { ...unit, position: newPosition, isAttacking: false };
-    }
-    return { ...unit, isAttacking: true };
-  } else {
-    const moveDirection = unit.isEnemy ? -1 : 1;
-    const newPosition = unit.position + moveDirection * (5 || 5); // Předpokládáme výchozí rychlost pohybu 5, pokud není specifikováno
-    return { ...unit, position: newPosition, isAttacking: false };
-  }
-}

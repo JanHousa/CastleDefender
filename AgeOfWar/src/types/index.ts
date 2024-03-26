@@ -13,6 +13,9 @@ export interface Unit {
   range: number;
   isEnemy?: boolean;
   isAttacking?: boolean;
+  lastAttackTime: number;
+  attackSpeed: number; // Milisekundy
+  isBlocked?: boolean; // Přidáno pro blokování jednotek
 }
 
 
