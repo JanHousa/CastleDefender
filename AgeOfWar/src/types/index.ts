@@ -18,6 +18,14 @@ export interface Unit {
   isBlocked?: boolean; // Přidáno pro blokování jednotek
 }
 
+export interface Effect {
+  id: string;
+  type: 'arrow';
+  startPosition: { x: number; y: number };
+  targetPosition: { x: number; y: number };
+  currentPosition: { x: number; y: number };
+  speed: number;
+}
 
 export interface GameState {
   units: Unit[];
@@ -32,7 +40,8 @@ export interface GameState {
   enemyGold: number;
   enemyEvolutionLevel: number;
   defenseTowers: DefenseTower[];
-  unitsByEvolution: UnitsByEvolution; // Add this line
+  unitsByEvolution: UnitsByEvolution;
+  effects: Effect[]; // Přidání efektů do stavu
 }
 
 

@@ -14,9 +14,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'Knight', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/rytir.png', position: 0, attackType: 'melee', range: 100, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'Archer', health: 100, attack: 45, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'Assasin', health: 100, attack: 35, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 100, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'Knight', health: 100, attack: 10, cost: 50, imageUrl: '/src/assets/images/rytir.png', position: 0, attackType: 'melee', range: 50, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'Archer', health: 100, attack: 5, cost: 60, imageUrl: '/src/assets/images/lukostrelec.png', position: 0, attackType: 'range', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'Assasin', health: 100, attack: 10, cost: 90, imageUrl: '/src/assets/images/assasin.png', position: 0, attackType: 'range', range: 50, attackSpeed: 1000, lastAttackTime: 0},
     // Další jednotky...
   ],
   2: [
@@ -30,8 +30,8 @@ const unitsByEvolution: UnitsByEvolution = {
 
 
 const availableTowers: DefenseTower[] = [
-  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 150, position: 0, imageUrl: '/src/assets/images/catapult.png' },
-  { id: 2, type: 'Cannon', cost: 500, attack: 75, range: 200, position: 0, imageUrl: '/src/assets/images/cannon.png' },
+  { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 450, position: 0, imageUrl: '/src/assets/images/catapult.png' },
+  { id: 2, type: 'Cannon', cost: 500, attack: 7, range: 450, position: 0, imageUrl: '/src/assets/images/cannon.png' },
   // Add more towers as needed
 ];
 
@@ -50,7 +50,7 @@ const initialGameState: GameState = {
   enemyEvolutionLevel: 1,
   defenseTowers: [], // Přidáno pro věže
   unitsByEvolution: unitsByEvolution, // Add this line
-  
+  effects: [], // Add this line
 };
 
 interface Tower {
