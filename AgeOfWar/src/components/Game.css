@@ -45,7 +45,7 @@
   .unit-card {
     width: 100px;
     height: 100px;
-    background-color: #f0f0f0;
+    background-color: #222222;
     position: relative;
     cursor: pointer;
     transition: scale 0.3s ease; 

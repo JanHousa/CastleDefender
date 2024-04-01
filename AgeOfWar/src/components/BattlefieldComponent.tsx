@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { GameState, Unit, DefenseTower } from '../types'; // Předpokládejme definici typů
+import { GameState, Unit } from '../types'; // Předpokládejme definici typů
 import UnitComponent from './UnitComponent';
-
 
 interface BattlefieldProps {
   gameState: GameState;
@@ -42,11 +41,11 @@ function updateUnitPositionAndAttack(
     }
   }
 
-  const moveDirection = unit.isEnemy ? -5 : 3;
+  const moveDirection = unit.isEnemy ? -5 : 5;
   const newPosition = unit.position + moveDirection;
 
-  const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 50 && ally.id !== unit.id)
-    || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 50);
+  const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 100 && ally.id !== unit.id)
+    || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 100);
 
   if (!isBlocked) {
     return { ...unit, position: newPosition, isAttacking: false };
@@ -55,48 +54,21 @@ function updateUnitPositionAndAttack(
   return { ...unit, isAttacking: false };
 }
 
-function attackWithTowers(towers: DefenseTower[], enemyUnits: Unit[], currentTime: number): Unit[] {
-  // Copy the enemy units to avoid direct state mutation
-  const updatedEnemyUnits = [...enemyUnits];
-
-  towers.forEach(tower => {
-    // Find the closest enemy unit within range
-    const targetIndex = updatedEnemyUnits.findIndex(
-      enemy => Math.abs(tower.position - enemy.position) <= tower.range
-    );
-
-    if (targetIndex !== -1) {
-      const target = updatedEnemyUnits[targetIndex];
-      const newHealth = target.health - tower.attack;
-      target.health = Math.max(0, newHealth); // Ensure health is not negative
-
-      if (target.health <= 0) {
-        // Remove the enemy unit if its health drops to 0 or below
-        updatedEnemyUnits.splice(targetIndex, 1);
-      }
-    }
-  });
-
-  return updatedEnemyUnits;
-}
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
     const combatInterval = setInterval(() => {
       const currentTime = Date.now();
   
-      // First, let the towers attack
-      const enemyUnitsAfterTowerAttack = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime);
-  
       let activeUnitsUpdated = gameState.activeUnits
-        .map(unit => updateUnitPositionAndAttack(unit, enemyUnitsAfterTowerAttack, gameState.activeUnits, currentTime, updateGameState))
+        .map(unit => updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits, currentTime))
         .filter((unit): unit is Unit => unit !== null);
   
-      let enemyUnitsUpdated = enemyUnitsAfterTowerAttack
-        .map(unit => updateUnitPositionAndAttack(unit, activeUnitsUpdated, gameState.enemyUnits, currentTime, updateGameState))
+      let enemyUnitsUpdated = gameState.enemyUnits
+        .map(unit => updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits, currentTime))
         .filter((unit): unit is Unit => unit !== null);
   
-      // Update the game state with new units and potentially fewer enemy units after tower attacks
+      // Aktualizace globálního stavu hry s novými poli jednotek
       updateGameState(prevState => ({
         ...prevState,
         activeUnits: activeUnitsUpdated,
@@ -120,4 +92,3 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 };
 
 export default BattlefieldComponent;
-
