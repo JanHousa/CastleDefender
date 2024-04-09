@@ -51,6 +51,7 @@ const initialGameState: GameState = {
   defenseTowers: [], // Přidáno pro věže
   unitsByEvolution: unitsByEvolution, // Add this line
   effects: [], // Add this line
+  enemyHealth: 100, // Oprava chyby v názvu
 };
 
 interface Tower {
@@ -303,7 +304,8 @@ useEffect(() => {
     />
   )}
 </div>
-        <div className="enemy-base"></div>
+        <div className="enemy-base">
+        <HealthBar health={gameState.enemyHealth} maxHealth={100} /></div>
       </div>
 
     </div>

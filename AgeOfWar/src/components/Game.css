@@ -1,12 +1,18 @@
-
+body{
+  margin: 0;
+}
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: black; 
+  background-color: rgba(0,0,0,0.9);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   gap: 1em;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  width: calc(100% - 40px);
 }
 
 .header-left{
@@ -95,14 +101,20 @@
 
 
 .game-area {
-  background-image: url("../assets/images/gamearea.png");
-  width: 1722px;
-  height: 663px; 
+  background-image: url("../assets/images/GameArea.png");
+  width: 100%;
+  height: 100vh; 
   position: relative; 
   z-index: 1;
   margin: auto;
-  margin-top: 20px;
   text-align: center;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position: 0px -300px;
+
+
 }
 
 .player-base, .enemy-base {
@@ -111,7 +123,10 @@
   width: 260px;
   height: 355px;
   margin-bottom: 160px;
-  background-image: url("../assets/images/tower.png");
+  background-image: url("../assets/images/Tower3.png");
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
 }
 
 .player-base {
@@ -128,7 +143,7 @@
   transition: left 0.5s linear; /* Plynulý pohyb jednotek */
   bottom: 0; /* nebo jiná počáteční pozice, pokud potřebujete */
   transition: left 0.2s ease-out; /* Přidává plynulý pohyb */
-  margin-bottom: 165px;
+  margin-bottom: 162px;
   z-index: 999;
 }
 
@@ -161,6 +176,8 @@
   display: flex;
   justify-content: center;
   padding: 10px;
+  top: 120px;
+  position: absolute;
 }
 
 .queue-item img {

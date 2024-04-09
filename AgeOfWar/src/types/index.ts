@@ -42,6 +42,7 @@ export interface GameState {
   defenseTowers: DefenseTower[];
   unitsByEvolution: UnitsByEvolution;
   effects: Effect[]; // Přidání efektů do stavu
+  enemyHealth: number; // Oprava chyby v názvu
 }
 
 
