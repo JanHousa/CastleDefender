@@ -23,6 +23,7 @@ function updateUnitPositionAndAttack(
   currentTime: number,
   updateGameState: (update: Partial<GameState>) => void
 ): Unit | null {
+  let isAttacking = false;
   const targetIndex = opponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
 
   if (targetIndex !== -1) {
@@ -30,6 +31,7 @@ function updateUnitPositionAndAttack(
     const { attacked, newHealth } = fight(unit, target, currentTime);
 
     if (attacked) {
+      isAttacking = true;
       if (newHealth <= 0) {
         opponents.splice(targetIndex, 1); // Remove the unit if its health drops to 0 or less
       } else {
@@ -37,15 +39,14 @@ function updateUnitPositionAndAttack(
       }
       // Update the game state with the new unit data
       updateGameState(prevState => {
-        const updatedActiveUnits = prevState.activeUnits.map(u => u.id === unit.id ? { ...u, isAttacking: true } : u);
-        const updatedEnemyUnits = prevState.enemyUnits.map(u => u.id === target.id ? { ...u, health: newHealth } : u);
+        const updatedActiveUnits = prevState.activeUnits.map(u => u.id === target.id ? { ...u, health: newHealth } : u);
+        const updatedEnemyUnits = prevState.enemyUnits.map(u => u.id === unit.id ? { ...u, isAttacking: true } : u);
         return {
           ...prevState,
           activeUnits: updatedActiveUnits,
           enemyUnits: updatedEnemyUnits,
         };
       });
-      return { ...unit, isAttacking: true };
     }
   }
 
@@ -55,15 +56,14 @@ function updateUnitPositionAndAttack(
   const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 40 && ally.id !== unit.id)
     || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
-  if (!isBlocked) {
-    // Move if not blocked
-    return { ...unit, position: newPosition };
+  if (!isBlocked && !isAttacking) {
+    // Move if not blocked and not attacking
+    return { ...unit, position: newPosition, isAttacking: false };
   }
 
-  // The unit stands still if the path is blocked
-  return unit;
+  // The unit stands still if the path is blocked or it is attacking
+  return { ...unit, isAttacking };
 }
-
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   // Inside BattlefieldComponent component
