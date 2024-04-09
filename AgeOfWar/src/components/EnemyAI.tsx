@@ -37,7 +37,7 @@ const EnemyAIComponent: React.FC<{
           };
         });
       }
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(intervalId);
   }, [gameState.enemyEvolutionLevel, gameState.enemyGold, unitsByEvolution, updateGameState]);

@@ -22,7 +22,7 @@ function updateUnitPositionAndAttack(
   allies: Unit[],
   currentTime: number,
   updateGameState: (update: Partial<GameState>) => void
-): Unit {
+): Unit | null {
   const targetIndex = opponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
 
   if (targetIndex !== -1) {
@@ -31,11 +31,11 @@ function updateUnitPositionAndAttack(
 
     if (attacked) {
       if (newHealth <= 0) {
-        opponents.splice(targetIndex, 1); // Odstraňujeme jednotku, pokud její zdraví klesne na 0 nebo méně
+        opponents.splice(targetIndex, 1); // Remove the unit if its health drops to 0 or less
       } else {
-        opponents[targetIndex].health = newHealth; // Aktualizujeme zdraví jednotky, pokud je stále živá
+        opponents[targetIndex].health = newHealth; // Update the unit's health if it's still alive
       }
-      // Aktualizace stavu hry s novými daty o jednotkách
+      // Update the game state with the new unit data
       updateGameState(prevState => {
         const updatedActiveUnits = prevState.activeUnits.map(u => u.id === unit.id ? { ...u, isAttacking: true } : u);
         const updatedEnemyUnits = prevState.enemyUnits.map(u => u.id === target.id ? { ...u, health: newHealth } : u);
@@ -56,38 +56,40 @@ function updateUnitPositionAndAttack(
     || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
   if (!isBlocked) {
-    // Pohyb, pokud není blokován
-    return { ...unit, position: newPosition, isAttacking: false };
+    // Move if not blocked
+    return { ...unit, position: newPosition };
   }
 
-  // Unitka stojí, pokud je cesta blokována
-  return { ...unit, isAttacking: false };
+  // The unit stands still if the path is blocked
+  return unit;
 }
 
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
-  useEffect(() => {
-    const combatInterval = setInterval(() => {
-      const currentTime = Date.now();
-  
-      let activeUnitsUpdated = gameState.activeUnits
-        .map(unit => updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits, currentTime))
-        .filter((unit): unit is Unit => unit !== null);
-  
-      let enemyUnitsUpdated = gameState.enemyUnits
-        .map(unit => updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits, currentTime))
-        .filter((unit): unit is Unit => unit !== null);
-  
-      // Aktualizace globálního stavu hry s novými poli jednotek
-      updateGameState(prevState => ({
-        ...prevState,
-        activeUnits: activeUnitsUpdated,
-        enemyUnits: enemyUnitsUpdated,
-      }));
-    }, 100);
-  
-    return () => clearInterval(combatInterval);
-  }, [gameState, updateGameState]);
+  // Inside BattlefieldComponent component
+useEffect(() => {
+  const combatInterval = setInterval(() => {
+    const currentTime = Date.now();
+    
+    // Process logic for all units
+    const updatedActiveUnits = gameState.activeUnits.map(unit => 
+      updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits, currentTime, updateGameState)
+    ).filter(unit => unit !== null) as Unit[]; // Remove null values and cast
+
+    const updatedEnemyUnits = gameState.enemyUnits.map(unit => 
+      updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits, currentTime, updateGameState)
+    ).filter(unit => unit !== null) as Unit[]; // Remove null values and cast
+
+    // Now you can update the overall game state with the newly updated units
+    updateGameState(prevState => ({
+      ...prevState,
+      activeUnits: updatedActiveUnits,
+      enemyUnits: updatedEnemyUnits,
+    }));
+  }, 100);
+
+  return () => clearInterval(combatInterval);
+}, [gameState, updateGameState]);
 
   return (
     <div className="battlefield">
