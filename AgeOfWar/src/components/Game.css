@@ -1,6 +1,7 @@
 body{
   margin: 0;
 }
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -9,11 +10,12 @@ body{
   background-color: rgba(0,0,0,0.9);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   gap: 1em;
-  position: absolute;
+  position: fixed; /* Změněno z 'absolute' na 'fixed' */
   top: 0;
   z-index: 999;
-  width: calc(100% - 40px);
+  width: calc(100% - 40px); /* Přizpůsobí se šířce viewportu s výjimkou paddingu */
 }
+
 
 .header-left{
   display: flex;
@@ -90,43 +92,46 @@ body{
   overflow: hidden; 
   margin-top: -30px;
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 .health-bar {
   z-index: 999;
   height: 100%;
   background-color: #4caf50;
-  transition: width 0.3s ease-in-out; 
+  transition: width 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
 .game-area {
-  background-image: url("../assets/images/GameArea.png");
-  width: 100%;
+  background-image: url("../assets/images/gamearea1.png");
+  width: 1920px;
   height: 100vh; 
+  background-repeat: no-repeat;
   position: relative; 
   z-index: 1;
   margin: auto;
   text-align: center;
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-position: 0px -300px;
-
-
+  background-position: bottom;
 }
 
 .player-base, .enemy-base {
   position: absolute;
   bottom: 0;
   width: 260px;
-  height: 355px;
-  margin-bottom: 160px;
+  height: 300px;
+  margin-bottom: 100px;
   background-image: url("../assets/images/Tower3.png");
   background-size: contain;
   background-position: center bottom;
   background-repeat: no-repeat;
+  
 }
 
 .player-base {
@@ -139,12 +144,21 @@ body{
 }
 
 .unit {
+  width: 100px; /* Nastavení šířky jednotky */
+  height: 100px; /* Nastavení výšky jednotky */
+  object-fit: cover; /* Zajistí, že obrázek pokryje celý kontejner, může oříznout některé části */
   position: absolute;
-  transition: left 0.5s linear; /* Plynulý pohyb jednotek */
   bottom: 0; /* nebo jiná počáteční pozice, pokud potřebujete */
   transition: left 0.2s ease-out; /* Přidává plynulý pohyb */
-  margin-bottom: 162px;
   z-index: 999;
+  margin-bottom: 115px;
+}
+
+.unit-image{
+  width: 100px; /* Nastavení šířky jednotky */
+  height: 100px;
+  display: flex;
+
 }
 
 .enemy {

@@ -35,8 +35,16 @@ function updateUnitPositionAndAttack(
       } else {
         opponents[targetIndex].health = newHealth; // Aktualizujeme zdraví jednotky, pokud je stále živá
       }
-      // Požádáme o aktualizaci stavu hry s novými daty o jednotkách
-      updateGameState({ activeUnits: [...opponents], enemyUnits: [...allies] });
+      // Aktualizace stavu hry s novými daty o jednotkách
+      updateGameState(prevState => {
+        const updatedActiveUnits = prevState.activeUnits.map(u => u.id === unit.id ? { ...u, isAttacking: true } : u);
+        const updatedEnemyUnits = prevState.enemyUnits.map(u => u.id === target.id ? { ...u, health: newHealth } : u);
+        return {
+          ...prevState,
+          activeUnits: updatedActiveUnits,
+          enemyUnits: updatedEnemyUnits,
+        };
+      });
       return { ...unit, isAttacking: true };
     }
   }
@@ -48,9 +56,11 @@ function updateUnitPositionAndAttack(
     || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
   if (!isBlocked) {
+    // Pohyb, pokud není blokován
     return { ...unit, position: newPosition, isAttacking: false };
   }
 
+  // Unitka stojí, pokud je cesta blokována
   return { ...unit, isAttacking: false };
 }
 
@@ -82,13 +92,22 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
   return (
     <div className="battlefield">
       {gameState.activeUnits.map((unit) => (
-        <UnitComponent key={unit.id} unit={unit} isEnemy={false} isAttacking={unit.isAttacking || false} />
+        <UnitComponent 
+          key={unit.id} 
+          unit={unit} 
+          isEnemy={unit.isEnemy} 
+          isAttacking={unit.isAttacking || false} // Zde zajištěno, že bude vždy boolean
+        />
       ))}
       {gameState.enemyUnits.map((unit) => (
-        <UnitComponent key={unit.id} unit={unit} isEnemy={true} isAttacking={unit.isAttacking || false} />
+        <UnitComponent 
+          key={unit.id} 
+          unit={unit} 
+          isEnemy={unit.isEnemy} 
+          isAttacking={unit.isAttacking || false} // Zde zajištěno, že bude vždy boolean
+        />
       ))}
     </div>
   );
 };
-
 export default BattlefieldComponent;
