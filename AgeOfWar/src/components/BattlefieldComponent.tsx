@@ -44,8 +44,8 @@ function updateUnitPositionAndAttack(
   const moveDirection = unit.isEnemy ? -5 : 5;
   const newPosition = unit.position + moveDirection;
 
-  const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 100 && ally.id !== unit.id)
-    || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 100);
+  const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 40 && ally.id !== unit.id)
+    || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
   if (!isBlocked) {
     return { ...unit, position: newPosition, isAttacking: false };
