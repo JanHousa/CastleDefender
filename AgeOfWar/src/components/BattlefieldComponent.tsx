@@ -11,6 +11,7 @@ function fight(unit: Unit, target: Unit, currentTime: number): { attacked: boole
   if (currentTime - unit.lastAttackTime >= unit.attackSpeed) {
     const newHealth = target.health - unit.attack;
     unit.lastAttackTime = currentTime;
+    console.log(`${unit.id} attacked ${target.id}, new health: ${newHealth}`); // Debug log
     return { attacked: true, newHealth: Math.max(0, newHealth) }; // Zajišťujeme, že zdraví nebude záporné
   }
   return { attacked: false, newHealth: target.health };
@@ -34,6 +35,7 @@ function updateUnitPositionAndAttack(
       // Útok proběhl
       if (newHealth <= 0) {
         // Nepřítel byl zabit
+        console.log(`${unit.id} killed ${target.id}`); // Debug log
         opponents.splice(targetIndex, 1);
       } else {
         // Nepřítel přežil, aktualizujeme jeho zdraví
@@ -55,6 +57,7 @@ function updateUnitPositionAndAttack(
 
     if (!isBlocked) {
       // Pokud není blokována, jednotka se pohne a ukončí bojový stav
+      console.log(`${unit.id} moved to ${newPosition}`); // Debug log
       return { ...unit, position: newPosition, isAttacking: false };
     }
   }

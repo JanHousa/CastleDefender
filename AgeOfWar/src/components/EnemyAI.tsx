@@ -28,7 +28,7 @@ const EnemyAIComponent: React.FC<{
       if (unitToSpawn) {
         updateGameState((prevState: GameState): GameState => {
           // Přiřazení počáteční pozice, přidání UUID a nastavení isEnemy na true
-          const newEnemyUnit = { ...unitToSpawn, position: 1620, id: uuidv4(), isEnemy: true };
+          const newEnemyUnit = { ...unitToSpawn, position: 1820, id: uuidv4(), isEnemy: true };
           const newEnemyUnits = [...prevState.enemyUnits, newEnemyUnit];
           return {
             ...prevState,
