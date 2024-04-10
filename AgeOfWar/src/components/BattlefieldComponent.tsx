@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { GameState, Unit } from '../types'; // Předpokládejme definici typů
 import UnitComponent from './UnitComponent';
+import attackSound from '/src/assets/music/damage.mp3'; // replace with your actual path
 
 interface BattlefieldProps {
   gameState: GameState;
@@ -12,11 +13,14 @@ function fight(unit: Unit, target: Unit, currentTime: number): { attacked: boole
     const newHealth = target.health - unit.attack;
     unit.lastAttackTime = currentTime;
     console.log(`${unit.id} attacked ${target.id}, new health: ${newHealth}`); // Debug log
+
+    const sound = new Audio(attackSound); // Create an audio object
+    sound.play(); // Play the sound
+
     return { attacked: true, newHealth: Math.max(0, newHealth) }; // Zajišťujeme, že zdraví nebude záporné
   }
   return { attacked: false, newHealth: target.health };
 }
-
 function updateUnitPositionAndAttack(
   unit: Unit,
   opponents: Unit[],

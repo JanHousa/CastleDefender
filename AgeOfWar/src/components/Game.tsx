@@ -10,6 +10,7 @@ import TowerSelectionComponent from './TowerSelection'; // Předpokládá, že m
 import DefenseSlot from './DefenseSlot'; // Adjust the path as necessary
 import DefenseTowerComponent from './DefenseTower'; // Adjust the path as necessary
 import TowerComponent from './TowerComponent'; // Adjust the path as necessary
+import MusicPlayer from './MusicPlayer';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -270,6 +271,8 @@ useEffect(() => {
           <UnitCard key={unit.id} unit={unit} onBuy={() => spawnUnit(unit.type)} />
         ))}
       </div>
+
+      <MusicPlayer></MusicPlayer>
           
 
       <div className="evolve-button">
