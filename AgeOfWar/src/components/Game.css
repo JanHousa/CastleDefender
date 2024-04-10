@@ -1,5 +1,11 @@
 body{
   margin: 0;
+  
+}
+
+img {
+  pointer-events: none;
+  user-select: none;
 }
 
 .header {
@@ -85,6 +91,7 @@ body{
 
 
 .health-bar-container {
+  margin-left: 180px;
   width: 200px;
   height: 20px;
   background-color: rgb(232, 7, 7);
@@ -122,16 +129,27 @@ body{
 }
 
 .player-base, .enemy-base {
-  position: absolute;
+  position: absolute ;
   bottom: 0;
   width: 260px;
   height: 300px;
-  margin-bottom: 100px;
-  background-image: url("../assets/images/Tower3.png");
+  margin-bottom: 87px;
   background-size: contain;
   background-position: center bottom;
   background-repeat: no-repeat;
   
+}
+
+.tower-slot {
+  position: absolute;
+  bottom: 0; /* Ujistěte se, že tower-slot je při spodní hraně .player-base */
+  width: 400px; /* Případně upravte šířku podle velikosti obrázku věže */
+  height: auto; /* Přizpůsobí výšku obrázku */
+}
+
+.tower-slot img {
+  width: 100%; /* Zajistí, že obrázek věže bude mít stejnou šířku jako .tower-slot */
+  height: auto; /* Zachová poměr stran obrázku */
 }
 
 .player-base {

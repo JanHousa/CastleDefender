@@ -9,19 +9,21 @@ import UnitsList from './UnitsList';
 import TowerSelectionComponent from './TowerSelection'; // Předpokládá, že máte tuto komponentu
 import DefenseSlot from './DefenseSlot'; // Adjust the path as necessary
 import DefenseTowerComponent from './DefenseTower'; // Adjust the path as necessary
+import TowerComponent from './TowerComponent'; // Adjust the path as necessary
 import { v4 as uuidv4 } from 'uuid';
 
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
     { id: 1, type: 'knight', health: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    
-    // Další jednotky...
+
   ],
   2: [
-    { id: 4, type: 'Soldier', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/garda.png', position: 0, attackType: 'melee', range: 100, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 5, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 6, type: 'Archer', health: 100, attack: 25, cost: 50, imageUrl: '/src/assets/images/archer.png', position: 0, attackType: 'range', range: 100, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    // Další jednotky...
+  ],
+  3: [
+    { id: 1, type: 'knight', health: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
     // Další jednotky...
   ],
   // Další úrovně...
@@ -232,20 +234,23 @@ useEffect(() => {
         ...prevState,
         gold: prevState.gold - costOfEvolution,
         evolutionLevel: prevState.evolutionLevel + 1,
-        baseColor: getBaseColorForEvolution(prevState.evolutionLevel + 1),
+        // Předpokládá se, že máte definovanou funkci getTowerImageForEvolution
+        towerImage: getImageUrlForTower(prevState.evolutionLevel + 1),
         units: unitsByEvolution[prevState.evolutionLevel + 1] || [],
       }));
     } else {
       alert('Nedostatek zlata pro evoluci nebo neexistuje další úroveň.');
     }
   };
-
-  // Získání barvy základny pro danou úroveň evoluce
-  const getBaseColorForEvolution = (evolutionLevel: number): string => {
-    const colors = ['#dddddd', '#aaddaa', '#aadddd', '#ddaadd'];
-    return colors[evolutionLevel - 1] || colors[colors.length - 1];
+  
+  // Získání URL obrázku věže pro danou úroveň evoluce
+  const getImageUrlForTower = (evolutionLevel: number): string => {
+    const images = [
+      '/src/assets/images/animations/knight/walk/0.png', // URL obrázku pro úroveň 1
+    ];
+    return images[evolutionLevel - 1] || images[images.length - 1];
   };
-
+  
   
 
   return (
@@ -286,28 +291,34 @@ useEffect(() => {
          <BattlefieldComponent gameState={gameState} updateGameState={updateGameState} />
       <EnemyAIComponent gameState={gameState} updateGameState={setGameState} unitsByEvolution={unitsByEvolution} />
 
-        <div className="player-base">
-  {/* Assuming only one slot for simplicity; adjust as needed for multiple slots */}
-  <HealthBar health={gameState.health} maxHealth={100} />
-  <DefenseSlot
-    onSlotClick={toggleTowerSelection}
-    slotId={1}
-    tower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
-  />
-  {showTowerSelection && (
-    <TowerSelectionComponent
-      towers={availableTowers}
-      onTowerSelected={handleTowerSelection}
-      currentTower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
-      slotId={1} // Pass slotId if needed for handling selections
+      <div className="player-base">
+      <TowerComponent
+        health={gameState.health} // Předpokládáme, že health je stav vaší věže
+        maxHealth={100} // Předpokládáme, že maxHealth je maximální zdraví vaší věže
+        evolutionLevel={gameState.evolutionLevel}
     />
-  )}
-</div>
-        <div className="enemy-base">
-        <HealthBar health={gameState.enemyHealth} maxHealth={100} /></div>
+          {showTowerSelection && (
+              <TowerSelectionComponent
+                  towers={availableTowers}
+                  onTowerSelected={(tower, slotId) => handleTowerSelection(tower, slotId)}
+                  currentTower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
+                  slotId={1}
+              />
+          )}
       </div>
 
-    </div>
+      <div className="enemy-base">
+        <TowerComponent
+        health={gameState.health} // Předpokládáme, že health je stav vaší věže
+        maxHealth={100} // Předpokládáme, že maxHealth je maximální zdraví vaší věže
+        evolutionLevel={gameState.evolutionLevel}
+    />
+        </div>
+      </div>
+      </div>
+
+
+
   );
   
 };

@@ -32,7 +32,7 @@ const UnitComponent: React.FC<UnitProps> = ({ unit, isEnemy, isAttacking }) => {
         <div className="hp-bar" style={{ width: `${healthPercentage}%` }}></div>
       </div>
       <div className="unit-image">
-      <img src={imageSrc} alt={`${unit.type} ${actionType}`} />
+      <img src={imageSrc} alt={`${unit.type} ${actionType}`} draggable="false"/>
       </div>
     </div>
   );
