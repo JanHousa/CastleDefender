@@ -18,7 +18,6 @@ const UnitComponent: React.FC<UnitProps> = ({ unit, isEnemy, isAttacking }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setAnimationFrame(frame => (frame + 1) % 10); // Cyklus přes 10 snímků, 0 až 9
-      console.log(isAttacking);
     }, 100); // Změňte rychlost podle potřeby
 
     return () => clearInterval(interval);

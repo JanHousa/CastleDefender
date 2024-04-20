@@ -31,7 +31,7 @@ export interface GameState {
   units: Unit[];
   gold: number;
   health: number;
-  activeUnits: Unit[];
+  playerUnits: Unit[];
   evolutionLevel: number;
   baseColor: string;
   lastSpawnTime: number;

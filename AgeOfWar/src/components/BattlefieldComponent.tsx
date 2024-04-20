@@ -1,80 +1,72 @@
 import React, { useEffect } from 'react';
-import { GameState, Unit } from '../types'; 
+import { GameState, Unit } from '../types';
 import UnitComponent from './UnitComponent';
-import attackSound from '/src/assets/music/damage.mp3'; 
+import attackSound from '/src/assets/music/damage.mp3';
 
 interface BattlefieldProps {
   gameState: GameState;
-  updateGameState: (updateFunction: (prevState: GameState) => Partial<GameState>) => void;
+  updateGameState: (updateFunction: (prevState: GameState) => GameState) => void;
 }
 
-function fight(unit: Unit, target: Unit, currentTime: number): { attacked: boolean; newHealth: number } {
+function fight(unit: Unit, target: Unit, currentTime: number): { attacked: boolean, newHealth: number } {
   if (currentTime - unit.lastAttackTime >= unit.attackSpeed) {
-    const newHealth = target.health - unit.attack;
     unit.lastAttackTime = currentTime;
+    const newHealth = target.health - unit.attack;
 
     const sound = new Audio(attackSound);
     sound.play();
 
     return { attacked: true, newHealth: Math.max(0, newHealth) };
   }
-
   return { attacked: false, newHealth: target.health };
 }
 
-function updateUnitPositionAndAttack(
-  unit: Unit,
-  opponents: Unit[],
-  allies: Unit[],
-  currentTime: number,
-  updateGameState: (update: Partial<GameState>) => void
-): Unit | null {
-  const targetIndex = opponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
+function updateUnits(units: Unit[], opponents: Unit[], currentTime: number, isEnemy: boolean): { updatedUnits: Unit[], updatedOpponents: Unit[] } {
+  let newUnits = [...units];
+  let newOpponents = [...opponents];
 
-  if (targetIndex !== -1) {
-    const target = opponents[targetIndex];
-    const { attacked, newHealth } = fight(unit, target, currentTime);
-
-    if (attacked) {
-      if (newHealth <= 0) {
-        opponents.splice(targetIndex, 1);
-      } else {
-        opponents[targetIndex].health = newHealth; 
+  units.forEach((unit, index) => {
+    const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
+    if (targetIndex !== -1) {
+      // Attack if within range
+      const target = newOpponents[targetIndex];
+      const { attacked, newHealth } = fight(unit, target, currentTime);
+      if (attacked) {
+        if (newHealth <= 0) {
+          newOpponents.splice(targetIndex, 1); // Remove dead opponent
+        } else {
+          newOpponents[targetIndex].health = newHealth; // Update opponent's health
+        }
+        newUnits[index].isAttacking = true;
       }
-      return { ...unit, isAttacking: true };
     } else {
-      return { ...unit, isAttacking: true };
-    }
-  } else {
-    const moveDirection = unit.isEnemy ? -5 : 5;
-    const newPosition = unit.position + moveDirection;
-    const isBlocked = allies.some(ally => Math.abs(ally.position - newPosition) < 40 && ally.id !== unit.id)
-                      || opponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
+      // Move if no target is in range
+      const moveDirection = isEnemy ? -5 : 5;
+      const newPosition = unit.position + moveDirection;
+      const isBlocked = newUnits.some(ally => Math.abs(ally.position - newPosition) < 40 && ally.id !== unit.id) || newOpponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
-    if (!isBlocked) {
-      return { ...unit, position: newPosition, isAttacking: false };
+      if (!isBlocked) {
+        newUnits[index].position = newPosition; // Update unit's position
+        newUnits[index].isAttacking = false;
+      }
     }
-  }
-  return { ...unit, isAttacking: false };
+  });
+
+  return { updatedUnits: newUnits, updatedOpponents: newOpponents };
 }
 
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
     const combatInterval = setInterval(() => {
       const currentTime = Date.now();
-      
-      const updatedActiveUnits = gameState.activeUnits.map(unit => 
-        updateUnitPositionAndAttack(unit, gameState.enemyUnits, gameState.activeUnits, currentTime, updateGameState)
-      ).filter(unit => unit !== null) as Unit[];
 
-      const updatedEnemyUnits = gameState.enemyUnits.map(unit => 
-        updateUnitPositionAndAttack(unit, gameState.activeUnits, gameState.enemyUnits, currentTime, updateGameState)
-      ).filter(unit => unit !== null) as Unit[];
+      const { updatedUnits: updatedEnemyUnits, updatedOpponents: updatedPlayerUnits } = updateUnits(gameState.enemyUnits, gameState.playerUnits, currentTime, true);
+      const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits } = updateUnits(updatedPlayerUnits, updatedEnemyUnits, currentTime, false);
 
       updateGameState(prevState => ({
         ...prevState,
-        activeUnits: updatedActiveUnits,
-        enemyUnits: updatedEnemyUnits,
+        playerUnits: newUpdatedPlayerUnits,
+        enemyUnits: newUpdatedEnemyUnits,
       }));
     }, 100);
 
@@ -83,21 +75,11 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 
   return (
     <div className="battlefield">
-      {gameState.activeUnits.map((unit) => (
-        <UnitComponent 
-          key={unit.id} 
-          unit={unit} 
-          isEnemy={unit.isEnemy} 
-          isAttacking={unit.isAttacking || false}
-        />
+      {gameState.playerUnits.map(unit => (
+        <UnitComponent key={unit.id} unit={unit} isEnemy={false} isAttacking={unit.isAttacking || false} />
       ))}
-      {gameState.enemyUnits.map((unit) => (
-        <UnitComponent 
-          key={unit.id} 
-          unit={unit} 
-          isEnemy={unit.isEnemy} 
-          isAttacking={unit.isAttacking || false}
-        />  
+      {gameState.enemyUnits.map(unit => (
+        <UnitComponent key={unit.id} unit={unit} isEnemy={true} isAttacking={unit.isAttacking || false} />
       ))}
     </div>
   );

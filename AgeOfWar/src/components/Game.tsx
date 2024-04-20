@@ -43,7 +43,7 @@ const initialGameState: GameState = {
   units: unitsByEvolution[1], 
   gold: 1000,
   health: 100,
-  activeUnits: [],
+  playerUnits: [],
   evolutionLevel: 1,
   baseColor: 'gray', 
   lastSpawnTime: Date.now(), 
@@ -167,7 +167,7 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
         const unitToSpawn = gameState.unitQueue[0];
         setGameState(prevState => ({
           ...prevState,
-          activeUnits: [...prevState.activeUnits, { ...unitToSpawn, id: uuidv4(), position: 0 }], // Přidáváme UUID při spawnování
+          playerUnits: [...prevState.playerUnits, { ...unitToSpawn, id: uuidv4(), position: 0 }], // Přidáváme UUID při spawnování
           unitQueue: prevState.unitQueue.slice(1),
           lastSpawnTime: now,
         }));
