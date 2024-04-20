@@ -1,9 +1,9 @@
 import React from 'react';
-import { Unit } from '../types'; // Import interface Unit
+import { Unit } from '../types'; 
 
 interface UnitsListProps {
   units: Unit[];
-  onUnitClick: (unit: Unit) => void; // Callback pro kliknutí na jednotku
+  onUnitClick: (unit: Unit) => void; 
 }
 
 const UnitsList: React.FC<UnitsListProps> = ({ units, onUnitClick }) => {

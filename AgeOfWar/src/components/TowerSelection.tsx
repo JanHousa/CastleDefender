@@ -1,12 +1,12 @@
-// TowerSelectionComponent.tsx
+
 import React from 'react';
-import { DefenseTower } from '../types'; // Předpokládáme import typů
+import { DefenseTower } from '../types'; 
 
 interface TowerSelectionComponentProps {
   towers: DefenseTower[];
   onTowerSelected: (tower: DefenseTower | 'sell', slotId: number) => void;
-  currentTower?: DefenseTower; // Optional current tower
-  slotId: number; // Add slotId here
+  currentTower?: DefenseTower; 
+  slotId: number; 
 }
 
 
@@ -14,14 +14,14 @@ const TowerSelectionComponent = ({
   towers,
   onTowerSelected,
   currentTower,
-  slotId, // Include slotId in the component parameters
+  slotId, 
 }: TowerSelectionComponentProps) => {
   return (
     <div className="tower-selection-menu">
       {currentTower ? (
         <div
           className="tower-option sell"
-          onClick={() => onTowerSelected('sell', slotId)} // Pass slotId here
+          onClick={() => onTowerSelected('sell', slotId)} 
         >
           Sell {currentTower.type} for {Math.round(currentTower.cost * 0.5)} Gold
         </div>
@@ -30,7 +30,7 @@ const TowerSelectionComponent = ({
           <div
             key={tower.id}
             className="tower-option"
-            onClick={() => onTowerSelected(tower, slotId)} // Pass slotId here
+            onClick={() => onTowerSelected(tower, slotId)} 
           >
             <p>{tower.type}</p>
             <p>Cost: {tower.cost} Gold</p>

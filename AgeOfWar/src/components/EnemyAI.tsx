@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { GameState, Unit, UnitsByEvolution } from '../types';
-import { v4 as uuidv4 } from 'uuid'; // Import uuid
+import { v4 as uuidv4 } from 'uuid'; 
 
 function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: number): Unit | null {
   const possibleUnits = unitsByEvolution[evolutionLevel];
@@ -8,15 +8,15 @@ function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: n
     console.log("No units available for spawning.");
     return null;
   }
-  // Vybrat jednotku a přiřadit jí uuid
+
   const unitTemplate = possibleUnits[Math.floor(Math.random() * possibleUnits.length)];
   return {
     ...unitTemplate,
-    id: uuidv4(), // Přidání UUID při vytváření jednotky
+    id: uuidv4(), 
   };
 }
 
-// Ve vaší EnemyAIComponent
+
 const EnemyAIComponent: React.FC<{
   gameState: GameState;
   updateGameState: (updateFunction: (prevState: GameState) => GameState) => void;
@@ -27,7 +27,7 @@ const EnemyAIComponent: React.FC<{
       const unitToSpawn = chooseUnitToSpawn(unitsByEvolution, gameState.enemyEvolutionLevel);
       if (unitToSpawn) {
         updateGameState((prevState: GameState): GameState => {
-          // Přiřazení počáteční pozice, přidání UUID a nastavení isEnemy na true
+
           const newEnemyUnit = { ...unitToSpawn, position: 1820, id: uuidv4(), isEnemy: true };
           const newEnemyUnits = [...prevState.enemyUnits, newEnemyUnit];
           return {
@@ -42,7 +42,7 @@ const EnemyAIComponent: React.FC<{
     return () => clearInterval(intervalId);
   }, [gameState.enemyEvolutionLevel, gameState.enemyGold, unitsByEvolution, updateGameState]);
 
-  return null; // Tato komponenta nic nevykresluje
+  return null; 
 };
 
 export default EnemyAIComponent;

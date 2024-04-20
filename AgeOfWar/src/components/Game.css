@@ -12,10 +12,10 @@ body{
   background-color: rgba(0,0,0,0.9);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   gap: 1em;
-  position: fixed; /* Změněno z 'absolute' na 'fixed' */
+  position: fixed; 
   top: 0;
   z-index: 999;
-  width: calc(100% - 40px); /* Přizpůsobí se šířce viewportu s výjimkou paddingu */
+  width: calc(100% - 40px); 
 }
 
 
@@ -138,14 +138,14 @@ body{
 
 .tower-slot {
   position: absolute;
-  bottom: 0; /* Ujistěte se, že tower-slot je při spodní hraně .player-base */
-  width: 400px; /* Případně upravte šířku podle velikosti obrázku věže */
-  height: auto; /* Přizpůsobí výšku obrázku */
+  bottom: 0; 
+  width: 400px; 
+  height: auto; 
 }
 
 .tower-slot img {
-  width: 100%; /* Zajistí, že obrázek věže bude mít stejnou šířku jako .tower-slot */
-  height: auto; /* Zachová poměr stran obrázku */
+  width: 100%; 
+  height: auto; 
 }
 
 .player-base {
@@ -158,12 +158,12 @@ body{
 }
 
 .unit {
-  width: 100px; /* Nastavení šířky jednotky */
-  height: 100px; /* Nastavení výšky jednotky */
-  object-fit: cover; /* Zajistí, že obrázek pokryje celý kontejner, může oříznout některé části */
+  width: 100px;
+  height: 100px; 
+  object-fit: cover; 
   position: absolute;
-  bottom: 0; /* nebo jiná počáteční pozice, pokud potřebujete */
-  transition: left 0.2s ease-out; /* Přidává plynulý pohyb */
+  bottom: 0; 
+  transition: left 0.2s ease-out; 
   z-index: 999;
   margin-bottom: 115px;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import playImage from '/src/assets/images/sound_on.png'; // replace with your actual path
-import pauseImage from '/src/assets/images/sound_off.png'; // replace with your actual path
+import playImage from '/src/assets/images/sound_on.png'; 
+import pauseImage from '/src/assets/images/sound_off.png';
 
 const MusicPlayer: React.FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
