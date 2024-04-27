@@ -35,9 +35,7 @@ const unitsByEvolution: UnitsByEvolution = {
 const availableTowers: DefenseTower[] = [
   { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 450, position: 0, imageUrl: '/src/assets/images/catapult.png' },
   { id: 2, type: 'Cannon', cost: 500, attack: 7, range: 450, position: 0, imageUrl: '/src/assets/images/cannon.png' },
-
 ];
-
 
 const initialGameState: GameState = {
   units: unitsByEvolution[1], 
@@ -54,18 +52,10 @@ const initialGameState: GameState = {
   defenseTowers: [],
   unitsByEvolution: unitsByEvolution, 
   effects: [], 
-  enemyHealth: 100, 
+  enemyHealth: 100,
+  playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 400 },
+  enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1550 },
 };
-
-interface Tower {
-  id: number;
-  type: string;
-  cost: number;
-  attack: number;
-  range: number;
-  imageUrl: string;
-  slotId: number;
-}
 
 
 const Game: React.FC = () => {
@@ -295,9 +285,11 @@ useEffect(() => {
 
       <div className="player-base">
       <TowerComponent
-        health={gameState.health} 
-        maxHealth={100} 
-        evolutionLevel={gameState.evolutionLevel}
+        health={gameState.playerTower.health} 
+        maxHealth={gameState.playerTower.maxHealth} 
+        evolutionLevel={gameState.playerTower.evolutionLevel}
+        isEnemy={gameState.playerTower.isEnemy}
+        position={gameState.playerTower.position}
     />
           {showTowerSelection && (
               <TowerSelectionComponent
@@ -311,9 +303,11 @@ useEffect(() => {
 
       <div className="enemy-base">
         <TowerComponent
-        health={gameState.health} 
-        maxHealth={100} 
-        evolutionLevel={gameState.evolutionLevel}
+        health={gameState.enemyTower.health} 
+        maxHealth={gameState.enemyTower.maxHealth} 
+        evolutionLevel={gameState.enemyTower.evolutionLevel}
+        isEnemy={gameState.enemyTower.isEnemy}
+        position={gameState.enemyTower.position}
     />
         </div>
       </div>

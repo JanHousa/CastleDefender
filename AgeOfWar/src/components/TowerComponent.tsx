@@ -1,10 +1,12 @@
 import React from 'react';
 import HealthBar from './HealthBar';
 
-interface TowerComponentProps {
+export interface TowerComponentProps {
     health: number;
     maxHealth: number;
     evolutionLevel: number; 
+    isEnemy: boolean;
+    position: number;
 }
 
 const TowerComponent: React.FC<TowerComponentProps> = ({ health, maxHealth, evolutionLevel }) => {

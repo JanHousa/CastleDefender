@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-
+import { TowerComponentProps } from '../components/TowerComponent';
 
 export interface Unit {
   id: number;
@@ -43,6 +43,8 @@ export interface GameState {
   unitsByEvolution: UnitsByEvolution;
   effects: Effect[]; // Přidání efektů do stavu
   enemyHealth: number; // Oprava chyby v názvu
+  playerTower: TowerComponentProps;
+  enemyTower: TowerComponentProps;
 }
 
 
