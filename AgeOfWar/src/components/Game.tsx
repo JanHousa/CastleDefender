@@ -286,23 +286,38 @@ useEffect(() => {
          <BattlefieldComponent gameState={gameState} updateGameState={updateGameState} />
       <EnemyAIComponent gameState={gameState} updateGameState={setGameState} unitsByEvolution={unitsByEvolution} />
 
-      <div className="player-base">
+
+        
+     
+      <div className="player-base">    
       <TowerComponent
         health={gameState.playerTower.health} 
         maxHealth={gameState.playerTower.maxHealth} 
         evolutionLevel={gameState.evolutionLevel}
         isEnemy={gameState.playerTower.isEnemy}
         position={gameState.playerTower.position}
-    />
-          {showTowerSelection && (
-              <TowerSelectionComponent
-                  towers={availableTowers}
-                  onTowerSelected={(tower, slotId) => handleTowerSelection(tower, slotId)}
-                  currentTower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
-                  slotId={1}
-              />
-          )}
+    />  
+
+
+    <div className='defense-container'>
+         
+        <DefenseSlot
+        onSlotClick={toggleTowerSelection}
+        slotId={1}
+        tower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
+      />
+      {showTowerSelection && (
+        <TowerSelectionComponent
+          towers={availableTowers}
+          onTowerSelected={handleTowerSelection}
+          currentTower={gameState.defenseTowers.find(tower => tower.slotId === 1)}
+          slotId={1} // Pass slotId if needed for handling selections
+        />
+      )}
+
+        </div>  
       </div>
+
 
       <div className="enemy-base">
         <TowerComponent

@@ -270,22 +270,17 @@ body{
 
 
 /* DefenseSlot.css */
-.defense-slot {
-  width: 50px; /* Nebo jakoukoli jinou příslušnou velikost */
-  height: 50px;
-  background-color: #c14c4c; /* Neutrální barva indikující prázdný slot */
-  cursor: pointer; /* Změní kurzor, aby indikoval možnost kliknutí */
-  margin: auto;
-  margin-top: 80px;
-  text-align: center;
-  /* Přidejte další styly pro pozicování, okraje, padding, atd. podle potřeby */
+.defense-container {
+  position: absolute;
+  z-index: 999;
+  margin-left: 250px;
 }
 
 
 /* TowerSelectionComponent.css */
 .tower-selection-menu {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px; /* Vytvoří mezery mezi jednotlivými zbraněmi */
 }
 
@@ -300,13 +295,21 @@ body{
   background-color: #383838; /* Ztmaví možnost při najetí myši */
 }
 
+.cost-overlay {
+  display: flex; /* Toto zajistí, že ikona a text jsou vedle sebe */
+  align-items: center; /* Vertikálně zarovná ikonu a text na stejnou úroveň */
+  color: white;
+  font-weight: 700;
+  padding: 0 0;
+}
+
 
 .defense-slot {
   width: 50px; /* Example size */
   height: 50px; /* Example size */
   position: relative;
   border: 3px solid #000000; /* Just for visibility */
-  /* Add more styles as needed */
+  cursor: pointer; /* Show click cursor on hover */
 }
 
 .hp-bar-container {
