@@ -323,3 +323,62 @@ body{
   height: 100%;
   background-color: #4CAF50; /* Zelená barva znamená zdraví */
 }
+
+
+
+/*MENU*/
+.menu {
+  position: relative;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 2;
+  padding: 20px;
+}
+
+.menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/src/assets/images/gamearea1.png") no-repeat center center / cover;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+/* Main card style */
+.menu .card {
+  background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%; /* Adjust width as needed */
+  max-width: 600px; /* Adjust max-width as needed */
+}
+
+.menu button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.8); /* Slightly transparent white for buttons */
+  border: none;
+  color: black;
+}
+
+.menu button:hover {
+  background: rgba(255, 255, 255, 1); /* Solid white background on hover */
+}
+
+.author, .reference {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+
+

@@ -280,6 +280,9 @@ useEffect(() => {
         ))}
       </footer>
 
+        
+
+
          <BattlefieldComponent gameState={gameState} updateGameState={updateGameState} />
       <EnemyAIComponent gameState={gameState} updateGameState={setGameState} unitsByEvolution={unitsByEvolution} />
 
@@ -287,7 +290,7 @@ useEffect(() => {
       <TowerComponent
         health={gameState.playerTower.health} 
         maxHealth={gameState.playerTower.maxHealth} 
-        evolutionLevel={gameState.playerTower.evolutionLevel}
+        evolutionLevel={gameState.evolutionLevel}
         isEnemy={gameState.playerTower.isEnemy}
         position={gameState.playerTower.position}
     />
