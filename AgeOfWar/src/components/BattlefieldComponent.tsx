@@ -3,6 +3,8 @@ import { GameState, Unit } from '../types';
 import UnitComponent from './UnitComponent';
 import attackSound from '/src/assets/music/damage.mp3';
 import { TowerComponentProps } from './TowerComponent';
+import { DefenseTower } from '../types';
+import TowerComponent from './TowerComponent';
 
 interface BattlefieldProps {
   gameState: GameState;
@@ -15,6 +17,7 @@ interface Attackable {
   lastAttackTime: number; // Might not be necessary for tower but included for consistency
   attackSpeed: number; // Might not be necessary for tower but included for consistency
 }
+
 
 
 function fight(unit: Unit, target: Attackable, currentTime: number): { attacked: boolean, newHealth: number } {
@@ -77,29 +80,56 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
 }
 
 
+interface DefenseTower {
+  position: number;
+  range: number;
+  attack: number;
+  attackSpeed: number;
+  lastAttackTime: number; // Add this line
+}
+
+function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: number): Unit[] {
+  return units.map(unit => {
+    towers.forEach(tower => {
+      // Check if enough time has passed since the last attack
+      if (Math.abs(tower.position - unit.position) <= tower.range && currentTime - tower.lastAttackTime >= tower.attackSpeed) {
+        const attackDamage = tower.attack; // Assuming each tower has an attack attribute
+        unit.health -= attackDamage;
+        tower.lastAttackTime = currentTime; // Update the last attack time of the tower only after it attacks
+        const sound = new Audio(attackSound);
+        sound.play();
+      }
+    });
+    return unit;
+  }).filter(unit => unit.health > 0); // Filter out dead units
+}
+
+
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
   useEffect(() => {
     const combatInterval = setInterval(() => {
       const currentTime = Date.now();
 
-      const towers = { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower };
+      // Towers attack enemy units first
+      let updatedEnemyUnits = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime);
 
-      const { updatedUnits: updatedEnemyUnits, updatedOpponents: updatedPlayerUnits, updatedGameState } = updateUnits(gameState.enemyUnits, gameState.playerUnits, towers, currentTime, true, gameState);
-      const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits, updatedGameState: newUpdatedGameState } = updateUnits(updatedPlayerUnits, updatedEnemyUnits, towers, currentTime, false, updatedGameState);
+      // Then update units' interactions
+      const { updatedUnits: newUpdatedEnemyUnits1, updatedOpponents: updatedPlayerUnits, updatedGameState } = updateUnits(updatedEnemyUnits, gameState.playerUnits, { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower }, currentTime, true, gameState);
+      const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits2, updatedGameState: newUpdatedGameState } = updateUnits(updatedPlayerUnits, newUpdatedEnemyUnits1, { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower }, currentTime, false, updatedGameState);
 
       updateGameState(prevState => ({
         ...prevState,
         playerUnits: newUpdatedPlayerUnits,
-        enemyUnits: newUpdatedEnemyUnits,
-        playerTower: towers.playerTower, // Ensure you handle updates properly if tower health changes
-        enemyTower: towers.enemyTower,
+        enemyUnits: newUpdatedEnemyUnits2,
+        defenseTowers: prevState.defenseTowers, // Don't reset lastAttackTime here
+        playerTower: gameState.playerTower,
+        enemyTower: gameState.enemyTower,
         gold: newUpdatedGameState.gold,
       }));
     }, 100);
 
     return () => clearInterval(combatInterval);
   }, [gameState, updateGameState]);
-
 
   return (
     <div className="battlefield">
@@ -114,4 +144,3 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 };
 
 export default BattlefieldComponent;
-

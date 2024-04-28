@@ -47,6 +47,7 @@ export interface GameState {
   enemyHealth: number; // Oprava chyby v názvu
   playerTower: TowerComponentProps;
   enemyTower: TowerComponentProps;
+  attackingTargets: { towerId: number; unitId: number }[];
 }
 
 
@@ -63,6 +64,8 @@ export interface DefenseTower {
   position: number;
   imageUrl: string; // Include this line to add the imageUrl property
   slotId?: number; // Přidáno pro správu slotů
+  attackSpeed: number; // This line defines how often the tower can attack
+  lastAttackTime: number; // This line defines the last time the tower attacked
 }
 
 export interface GameState {

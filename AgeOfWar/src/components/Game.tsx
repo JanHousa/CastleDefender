@@ -34,8 +34,8 @@ const unitsByEvolution: UnitsByEvolution = {
 
 
 const availableTowers: DefenseTower[] = [
-  { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 450, position: 0, imageUrl: '/src/assets/images/catapult.png' },
-  { id: 2, type: 'Cannon', cost: 500, attack: 7, range: 450, position: 0, imageUrl: '/src/assets/images/cannon.png' },
+  { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 600, position: 0, imageUrl: '/src/assets/images/catapult.png', attackSpeed: 1000, lastAttackTime: 0 },
+  { id: 2, type: 'Cannon', cost: 500, attack: 30, range: 600, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 1000, lastAttackTime: 0 },
 ];
 
 const initialGameState: GameState = {
@@ -56,6 +56,7 @@ const initialGameState: GameState = {
   enemyHealth: 100,
   playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 350 },
   enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1550 },
+  attackingTargets: [],
 };
 
 
