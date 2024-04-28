@@ -28,9 +28,10 @@ function fight(unit: Unit, target: Attackable, currentTime: number): { attacked:
   return { attacked: false, newHealth: target.health };
 }
 
-function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: TowerComponentProps, enemyTower: TowerComponentProps }, currentTime: number, isEnemy: boolean): { updatedUnits: Unit[], updatedOpponents: Unit[], updatedTowers: { playerTower: TowerComponentProps, enemyTower: TowerComponentProps } } {
+function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: TowerComponentProps, enemyTower: TowerComponentProps }, currentTime: number, isEnemy: boolean, gameState: GameState): { updatedUnits: Unit[], updatedOpponents: Unit[], updatedTowers: { playerTower: TowerComponentProps, enemyTower: TowerComponentProps }, updatedGameState: GameState } {
   let newUnits = [...units];
   let newOpponents = [...opponents];
+  let newGameState = { ...gameState };
 
   let targetTower = isEnemy ? towers.playerTower : towers.enemyTower;
 
@@ -43,6 +44,10 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
       if (attacked) {
         if (newHealth <= 0) {
           newOpponents.splice(targetIndex, 1); // Remove dead opponent
+          if (!isEnemy) { // If the unit is not an enemy, increase the player's gold
+            console.log(unit.goldValue);
+            newGameState.gold += Number(unit.goldValue); // Change this line
+          }
         } else {
           newOpponents[targetIndex].health = newHealth; // Update opponent's health
         }
@@ -68,7 +73,7 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
     }
   });
 
-  return { updatedUnits: newUnits, updatedOpponents: newOpponents, updatedTowers: { playerTower: towers.playerTower, enemyTower: towers.enemyTower } };
+  return { updatedUnits: newUnits, updatedOpponents: newOpponents, updatedTowers: { playerTower: towers.playerTower, enemyTower: towers.enemyTower }, updatedGameState: newGameState };
 }
 
 
@@ -79,8 +84,8 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
 
       const towers = { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower };
 
-      const { updatedUnits: updatedEnemyUnits, updatedOpponents: updatedPlayerUnits } = updateUnits(gameState.enemyUnits, gameState.playerUnits, towers, currentTime, true);
-      const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits } = updateUnits(updatedPlayerUnits, updatedEnemyUnits, towers, currentTime, false);
+      const { updatedUnits: updatedEnemyUnits, updatedOpponents: updatedPlayerUnits, updatedGameState } = updateUnits(gameState.enemyUnits, gameState.playerUnits, towers, currentTime, true, gameState);
+      const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits, updatedGameState: newUpdatedGameState } = updateUnits(updatedPlayerUnits, updatedEnemyUnits, towers, currentTime, false, updatedGameState);
 
       updateGameState(prevState => ({
         ...prevState,
@@ -88,11 +93,13 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
         enemyUnits: newUpdatedEnemyUnits,
         playerTower: towers.playerTower, // Ensure you handle updates properly if tower health changes
         enemyTower: towers.enemyTower,
+        gold: newUpdatedGameState.gold,
       }));
     }, 100);
 
     return () => clearInterval(combatInterval);
   }, [gameState, updateGameState]);
+
 
   return (
     <div className="battlefield">

@@ -17,6 +17,7 @@ export interface Unit {
   attackSpeed: number; // Milisekundy
   isBlocked?: boolean; // Přidáno pro blokování jednotek
   maxHealth: number; // Přidáno pro zjištění maximálního zdraví
+  goldValue: number; // Přidáno pro zjištění hodnoty zlata
 }
 
 export interface Effect {

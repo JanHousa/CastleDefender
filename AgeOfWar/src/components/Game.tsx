@@ -16,17 +16,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 300, maxHealth: 300, attack: 40, cost: 100, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 20, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 15, cost: 70, goldValue: 40, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'berserk', health: 300, maxHealth: 300, attack: 40, cost: 300, goldValue: 200, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   3: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
 
@@ -40,7 +40,7 @@ const availableTowers: DefenseTower[] = [
 
 const initialGameState: GameState = {
   units: unitsByEvolution[1], 
-  gold: 1000,
+  gold: 200,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -54,7 +54,7 @@ const initialGameState: GameState = {
   unitsByEvolution: unitsByEvolution, 
   effects: [], 
   enemyHealth: 100,
-  playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 300 },
+  playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 350 },
   enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1550 },
 };
 
@@ -73,7 +73,7 @@ const Game: React.FC = () => {
   const goldInterval = setInterval(() => {
     setGameState((prevState) => ({
       ...prevState,
-      gold: prevState.gold + 2,
+      gold: prevState.gold + 1,
     }));
   }, 1000); 
 

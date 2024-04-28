@@ -26,12 +26,12 @@ const UnitComponent: React.FC<UnitProps> = ({ unit, isEnemy, isAttacking }) => {
   const imageSrc = `/src/assets/images/animations/${unit.type}/${actionType}/${animationFrame}.png`;
 
   return (
-    <div className={`unit ${isEnemy ? 'enemy' : ''} ${isAttacking ? 'attacking' : ''} ${unit.type === 'berserk' ? 'unit-image-scale' : ''}`} style={{ left: `${unit.position}px` }}>
+    <div className={`unit ${isEnemy ? 'enemy' : ''} ${isAttacking ? 'attacking' : ''} ${unit.type === 'berserk' ? 'unit-image-bottom' : ''}`} style={{ left: `${unit.position}px` }}>
       <div className="hp-bar-container">
         <div className="hp-bar" style={{ width: `${healthPercentage}%` }}></div>
       </div>
       
-      <div className={`unit-image ${unit.type === 'berserk' ? 'unit-image' : ''}`}>
+      <div className={`unit-image ${unit.type === 'berserk' ? 'unit-image-scale' : ''}`}>
         <img src={imageSrc} alt={`${unit.type} ${actionType}`} draggable="false"/>
       </div>
       
