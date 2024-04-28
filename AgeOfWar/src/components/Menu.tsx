@@ -15,6 +15,7 @@ const Menu = ({ onStartGame }: MenuProps) => {
                 </div>
                 <p className="author">Game by Jan Housa</p>
                 <p className="reference">This is a remake of Age of War</p>
+                <p className="reference">Graphic materials are from Dell-E 3 and Craftpix.net</p> 
             </div>
         </div>
     );
