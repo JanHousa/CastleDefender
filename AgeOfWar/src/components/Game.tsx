@@ -18,7 +18,7 @@ const unitsByEvolution: UnitsByEvolution = {
   1: [
     { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 50, goldValue: 20, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
     { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 15, cost: 70, goldValue: 40, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 300, maxHealth: 300, attack: 40, cost: 300, goldValue: 200, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 300, goldValue: 200, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
@@ -35,7 +35,7 @@ const unitsByEvolution: UnitsByEvolution = {
 
 const availableTowers: DefenseTower[] = [
   { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 600, position: 0, imageUrl: '/src/assets/images/catapult.png', attackSpeed: 1000, lastAttackTime: 0 },
-  { id: 2, type: 'Cannon', cost: 500, attack: 30, range: 600, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 1000, lastAttackTime: 0 },
+  { id: 2, type: 'Cannon', cost: 500, attack: 50, range: 600, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 1000, lastAttackTime: 0 },
 ];
 
 const initialGameState: GameState = {
