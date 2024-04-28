@@ -16,6 +16,7 @@ export interface Unit {
   lastAttackTime: number;
   attackSpeed: number; // Milisekundy
   isBlocked?: boolean; // Přidáno pro blokování jednotek
+  maxHealth: number; // Přidáno pro zjištění maximálního zdraví
 }
 
 export interface Effect {

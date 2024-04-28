@@ -385,3 +385,7 @@ body{
 
 
 
+.unit-image-scale{
+  scale: 1.15;
+  padding-bottom: 8px;
+}

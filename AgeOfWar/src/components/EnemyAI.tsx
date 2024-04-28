@@ -28,7 +28,7 @@ const EnemyAIComponent: React.FC<{
       if (unitToSpawn) {
         updateGameState((prevState: GameState): GameState => {
 
-          const newEnemyUnit = { ...unitToSpawn, position: 1820, id: uuidv4(), isEnemy: true };
+          const newEnemyUnit = { ...unitToSpawn, position: 1600, id: uuidv4(), isEnemy: true };
           const newEnemyUnits = [...prevState.enemyUnits, newEnemyUnit];
           return {
             ...prevState,
