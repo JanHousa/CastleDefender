@@ -1,7 +1,7 @@
 {
   "homepage": "https://JanHousa.github.io/ageofwarReact",
   "name": "ageofwar",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
