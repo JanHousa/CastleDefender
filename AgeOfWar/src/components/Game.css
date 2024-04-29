@@ -393,3 +393,25 @@ body{
 .unit-image-bottom{
   padding-bottom: 6px;
 }
+
+
+/*EFFECTS*/
+
+.effect {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgb(51, 51, 51);
+  animation: moveEffect 1s ease-out forwards;
+  z-index: 999;
+}
+
+@keyframes moveEffect {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--translateX), var(--translateY));
+  }
+}

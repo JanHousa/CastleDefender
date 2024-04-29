@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GameState, Unit } from '../types';
 import UnitComponent from './UnitComponent';
 import attackSound from '/src/assets/music/damage.mp3';
 import { TowerComponentProps } from './TowerComponent';
 import { DefenseTower } from '../types';
-import TowerComponent from './TowerComponent';
+import Effect from './Effect'; // Import the Effect component
 
 interface BattlefieldProps {
   gameState: GameState;
@@ -14,11 +14,16 @@ interface BattlefieldProps {
 interface Attackable {
   health: number;
   position: number;
-  lastAttackTime: number; // Might not be necessary for tower but included for consistency
-  attackSpeed: number; // Might not be necessary for tower but included for consistency
+  lastAttackTime: number;
+  attackSpeed: number;
 }
 
-
+interface EffectDetail {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
 
 function fight(unit: Unit, target: Attackable, currentTime: number): { attacked: boolean, newHealth: number } {
   if (currentTime - unit.lastAttackTime >= unit.attackSpeed) {
@@ -39,38 +44,34 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
   let targetTower = isEnemy ? towers.playerTower : towers.enemyTower;
 
   units.forEach((unit, index) => {
-    // First try to find an opponent unit within range
     const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
     if (targetIndex !== -1) {
       const target = newOpponents[targetIndex];
       const { attacked, newHealth } = fight(unit, target, currentTime);
       if (attacked) {
         if (newHealth <= 0) {
-          newOpponents.splice(targetIndex, 1); // Remove dead opponent
-          if (!isEnemy) { // If the unit is not an enemy, increase the player's gold
-            console.log(unit.goldValue);
-            newGameState.gold += Number(unit.goldValue); // Change this line
+          newOpponents.splice(targetIndex, 1);
+          if (!isEnemy) {
+            newGameState.gold += Number(unit.goldValue);
           }
         } else {
-          newOpponents[targetIndex].health = newHealth; // Update opponent's health
+          newOpponents[targetIndex].health = newHealth;
         }
         newUnits[index].isAttacking = true;
       }
     } else if (Math.abs(unit.position - targetTower.position) <= unit.range) {
-      // No opponent within range, but tower is within range
       const { attacked, newHealth } = fight(unit, { health: targetTower.health, position: targetTower.position, attackSpeed: 999999, lastAttackTime: 0 }, currentTime);
       if (attacked) {
         targetTower.health = newHealth;
         newUnits[index].isAttacking = true;
       }
     } else {
-      // Move if no target is in range
       const moveDirection = isEnemy ? -5 : 5;
       const newPosition = unit.position + moveDirection;
       const isBlocked = newUnits.some(ally => Math.abs(ally.position - newPosition) < 40 && ally.id !== unit.id) || newOpponents.some(opponent => Math.abs(opponent.position - newPosition) < 40);
 
       if (!isBlocked) {
-        newUnits[index].position = newPosition; // Update unit's position
+        newUnits[index].position = newPosition;
         newUnits[index].isAttacking = false;
       }
     }
@@ -79,60 +80,72 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
   return { updatedUnits: newUnits, updatedOpponents: newOpponents, updatedTowers: { playerTower: towers.playerTower, enemyTower: towers.enemyTower }, updatedGameState: newGameState };
 }
 
-
-interface DefenseTower {
-  position: number;
-  range: number;
-  attack: number;
-  attackSpeed: number;
-  lastAttackTime: number; // Add this line
-}
-
-function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: number): Unit[] {
+function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: number, effects: EffectDetail[]): Unit[] {
   return units.map(unit => {
     towers.forEach(tower => {
-      // Check if enough time has passed since the last attack
       if (Math.abs(tower.position - unit.position) <= tower.range && currentTime - tower.lastAttackTime >= tower.attackSpeed) {
-        const attackDamage = tower.attack; // Assuming each tower has an attack attribute
+        const attackDamage = tower.attack;
         unit.health -= attackDamage;
-        tower.lastAttackTime = currentTime; // Update the last attack time of the tower only after it attacks
-        const sound = new Audio(attackSound);
-        sound.play();
+        tower.lastAttackTime = currentTime;
+
+        effects.push({
+          startX: 250,
+          startY: 500, 
+          endX: unit.position + 20,
+          endY: 800 
+        });
       }
     });
     return unit;
-  }).filter(unit => unit.health > 0); // Filter out dead units
+  }).filter(unit => unit.health > 0);
 }
 
 
+
 const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGameState }) => {
+  const [effects, setEffects] = useState<EffectDetail[]>([]);
+
   useEffect(() => {
     const combatInterval = setInterval(() => {
       const currentTime = Date.now();
+      let newEffects: EffectDetail[] = [];
 
-      // Towers attack enemy units first
-      let updatedEnemyUnits = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime);
+      // Towers attack enemy units first, creating effects
+      let updatedEnemyUnits = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime, newEffects);
 
       // Then update units' interactions
       const { updatedUnits: newUpdatedEnemyUnits1, updatedOpponents: updatedPlayerUnits, updatedGameState } = updateUnits(updatedEnemyUnits, gameState.playerUnits, { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower }, currentTime, true, gameState);
       const { updatedUnits: newUpdatedPlayerUnits, updatedOpponents: newUpdatedEnemyUnits2, updatedGameState: newUpdatedGameState } = updateUnits(updatedPlayerUnits, newUpdatedEnemyUnits1, { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower }, currentTime, false, updatedGameState);
 
+      // Update effects to trigger animations
+      setEffects(prev => [...prev, ...newEffects]);
+
+      // Clean up old effects after 1 second
+      setTimeout(() => {
+        setEffects(prev => prev.slice(newEffects.length));
+      }, 1000);
+
       updateGameState(prevState => ({
         ...prevState,
         playerUnits: newUpdatedPlayerUnits,
         enemyUnits: newUpdatedEnemyUnits2,
-        defenseTowers: prevState.defenseTowers, // Don't reset lastAttackTime here
+        defenseTowers: prevState.defenseTowers,
         playerTower: gameState.playerTower,
         enemyTower: gameState.enemyTower,
         gold: newUpdatedGameState.gold,
       }));
     }, 100);
 
-    return () => clearInterval(combatInterval);
+    return () => {
+      clearInterval(combatInterval);
+    };
   }, [gameState, updateGameState]);
 
   return (
     <div className="battlefield">
+      {effects.map((effect, index) => (
+        <Effect key={index} startX={effect.startX} startY={effect.startY} endX={effect.endX} endY={effect.endY} />
+      ))}
       {gameState.playerUnits.map(unit => (
         <UnitComponent key={unit.id} unit={unit} isEnemy={false} isAttacking={unit.isAttacking || false} />
       ))}
