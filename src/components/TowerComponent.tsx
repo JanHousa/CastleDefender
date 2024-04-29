@@ -23,9 +23,9 @@ const TowerComponent: React.FC<TowerComponentProps> = ({ health, maxHealth, evol
 
 const getImageUrlForEvolution = (evolutionLevel: number): string => {
     const imageUrlMap = {
-        1: '/src/assets/images/Tower1.png',
-        2: '/src/assets/images/Tower2.png',
-        3: '/src/assets/images/Tower3.png'
+        1: './src/assets/images/Tower1.png',
+        2: './src/assets/images/Tower2.png',
+        3: './src/assets/images/Tower3.png'
     };
 
     return imageUrlMap[evolutionLevel] || imageUrlMap[1]; 

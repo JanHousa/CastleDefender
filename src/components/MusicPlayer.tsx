@@ -20,7 +20,7 @@ const MusicPlayer: React.FC = () => {
     return (
         <div>
             <img src={isPlaying ? pauseImage : playImage} onClick={togglePlay} alt={isPlaying ? 'Pause' : 'Play'} />
-            <audio ref={audioRef} src="/src/assets/music/theme.mp3" />
+            <audio ref={audioRef} src="./src/assets/music/theme.mp3" />
         </div>
     );
 };

@@ -30,7 +30,7 @@ const UnitComponent: React.FC<UnitProps> = ({ unit, isEnemy, isAttacking }) => {
     return () => clearInterval(interval);
   }, [isAttacking, unit.type]); // Přidání unit.type do závislostí pro přizpůsobení speciálních typů
 
-  const imageSrc = `/src/assets/images/animations/${unit.type}/${actionType}/${animationFrame}.png`;
+  const imageSrc = `./src/assets/images/animations/${unit.type}/${actionType}/${animationFrame}.png`;
 
   return (
     <div className={`unit ${isEnemy ? 'enemy' : ''} ${isAttacking ? 'attacking' : ''} ${isSpecialUnit ? 'unit-image-bottom unit-image-scale' : ''}`} style={{ left: `${unit.position}px` }}>

@@ -14,21 +14,22 @@ import MusicPlayer from './MusicPlayer';
 import { v4 as uuidv4 } from 'uuid';
 
 
+
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
-    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 200, imageUrl: '/src/assets/images/animations/assasin/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 1, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: '/src/assets/images/animations/warrior/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 1, type: 'goldenguard', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: '/src/assets/images/animations/goldenguard/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 200, imageUrl: './src/assets/images/animations/assasin/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: './src/assets/images/animations/warrior/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'goldenguard', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: './src/assets/images/animations/goldenguard/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   3: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: './src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
 
@@ -36,13 +37,13 @@ const unitsByEvolution: UnitsByEvolution = {
 
 
 const availableTowers: DefenseTower[] = [
-  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 600, position: 0, imageUrl: '/src/assets/images/catapult.png', attackSpeed: 2000, lastAttackTime: 0 },
-  { id: 2, type: 'Cannon', cost: 500, attack: 80, range: 700, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 2000, lastAttackTime: 0 },
+  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 600, position: 0, imageUrl: './src/assets/images/catapult.png', attackSpeed: 2000, lastAttackTime: 0 },
+  { id: 2, type: 'Cannon', cost: 500, attack: 80, range: 700, position: 0, imageUrl: './src/assets/images/cannon.png', attackSpeed: 2000, lastAttackTime: 0 },
 ];
 
 const initialGameState: GameState = {
   units: unitsByEvolution[1], 
-  gold: 1000,
+  gold: 150,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -63,7 +64,7 @@ const initialGameState: GameState = {
 
 //
 
-const Game: React.FC = () => {
+const Game: React.FC<{ onEndGame: () => void }> = ({ onEndGame }) => {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [showTowerSelection, setShowTowerSelection] = useState(false);
 
@@ -83,6 +84,19 @@ const Game: React.FC = () => {
 
   return () => clearInterval(goldInterval);
 }, []);
+
+  // Check the tower health to determine if the game should end
+useEffect(() => {
+  const checkTowerHealth = () => {
+    // You need to implement logic to check for tower health
+    if (gameState.playerTower.health <= 0 || gameState.enemyTower.health <= 0) {
+      onEndGame();  // This method should be passed from the parent component
+    }
+  };
+
+  const healthCheckInterval = setInterval(checkTowerHealth, 1000);
+  return () => clearInterval(healthCheckInterval);
+}, [gameState.playerTower.health, gameState.enemyTower.health, onEndGame]);
 
 
   // Handle the purchase of a tower and place it in the selected slot
@@ -144,7 +158,7 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
         const unitToSpawn = gameState.unitQueue[0];
         setGameState(prevState => ({
           ...prevState,
-          playerUnits: [...prevState.playerUnits, { ...unitToSpawn, id: uuidv4(), position: 230 }], // Přidáváme UUID při spawnování
+          playerUnits: [...prevState.playerUnits, { ...unitToSpawn, id: uuidv4(), position: 50 }], // Přidáváme UUID při spawnování
           unitQueue: prevState.unitQueue.slice(1),
           lastSpawnTime: now,
         }));
@@ -205,7 +219,7 @@ const spawnUnit = (unitType: string) => {
 
   const getImageUrlForTower = (evolutionLevel: number): string => {
     const images = [
-      '/src/assets/images/animations/knight/walk/0.png', 
+      './src/assets/images/animations/knight/walk/0.png', 
     ];
     return images[evolutionLevel - 1] || images[images.length - 1];
   };
@@ -213,7 +227,9 @@ const spawnUnit = (unitType: string) => {
   
 
   return (
+    
     <div>
+      
       <header className="header">
       <div className='header-left'>
         <div className="gold-info">
