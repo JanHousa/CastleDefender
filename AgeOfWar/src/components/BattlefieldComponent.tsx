@@ -45,7 +45,7 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
   let targetTower = isEnemy ? towers.playerTower : towers.enemyTower;
 
   units.forEach((unit, index) => {
-    const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range - 100);
+    const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
     if (targetIndex !== -1) {
       const target = newOpponents[targetIndex];
       const { attacked, newHealth } = fight(unit, target, currentTime);
@@ -102,7 +102,7 @@ function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: nu
           if (unit.health <= 0) {
             gameState.gold += unit.goldValue; // Award gold based on the killed unit's value
           }
-        }, 500);
+        }, 800);
     
         tower.lastAttackTime = currentTime;
       }

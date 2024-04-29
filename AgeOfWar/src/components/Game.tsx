@@ -16,13 +16,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 20, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 150, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 30, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 250, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
     { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: '/src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 200, imageUrl: '/src/assets/images/animations/assasin/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: '/src/assets/images/animations/warrior/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'goldenguard', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: '/src/assets/images/animations/goldenguard/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   3: [
@@ -40,7 +42,7 @@ const availableTowers: DefenseTower[] = [
 
 const initialGameState: GameState = {
   units: unitsByEvolution[1], 
-  gold: 100,
+  gold: 1000,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -54,8 +56,8 @@ const initialGameState: GameState = {
   unitsByEvolution: unitsByEvolution, 
   effects: [], 
   enemyHealth: 100,
-  playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 350 },
-  enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1550 },
+  playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 300 },
+  enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1600 },
   attackingTargets: [],
 };
 
@@ -81,25 +83,7 @@ const Game: React.FC = () => {
   return () => clearInterval(goldInterval);
 }, []);
 
-/*
-  // Move enemy units towards the player's base
-  useEffect(() => {
-    
-    const moveUnitsInterval = setInterval(() => {
-      setGameState((prevState) => {
-        const movedUnits = prevState.enemyUnits.map((unit) => ({
-          ...unit,
-          position: unit.position - 5, // Move enemy units towards the player's base
-        }));
 
-        return { ...prevState, enemyUnits: movedUnits };
-      });
-    }, 100); // Update unit positions every 100 ms
-
-    return () => clearInterval(moveUnitsInterval);
-  }, []);
-
-*/
   // Handle the purchase of a tower and place it in the selected slot
   const handleTowerPurchase = (tower: DefenseTower, slotId: number) => {
     const isSlotOccupied = gameState.defenseTowers.some((t) => t.slotId === slotId);
@@ -199,25 +183,7 @@ const spawnUnit = (unitType: string) => {
     alert('Nedostatek zlata nebo chybný typ jednotky!');
   }
 };
-  /*
-// Pohyb jednotek
-useEffect(() => {
-  const moveUnits = () => {
-    setGameState(prevState => ({
-      ...prevState,
-      activeUnits: prevState.activeUnits.map(unit => ({
-        ...unit,
-        position: unit.position + 2, // Příklad posunu jednotek
-      })),
-    }));
-  };
 
-  // Pohyb jednotek každých 50 ms
-  const intervalId = setInterval(moveUnits, 50); 
-
-  return () => clearInterval(intervalId);
-}, [gameState.activeUnits.length]); // Spustí se znovu, pokud se změní počet aktivních jednotek
-*/
   // Evoluce
   const evolve = () => {
     const costOfEvolution = 100;
