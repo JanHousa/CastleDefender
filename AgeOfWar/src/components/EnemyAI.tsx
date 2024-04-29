@@ -59,7 +59,7 @@ const EnemyAIComponent: React.FC<{
       setTimeElapsed(0); // Reset the unit spawning timer
       }
 
-    }, Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000);
+    }, Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000);
 
     return () => clearInterval(intervalId);
   }, [gameState.enemyTower.evolutionLevel, unitsByEvolution, updateGameState, timeElapsed, evolutionTimer]);

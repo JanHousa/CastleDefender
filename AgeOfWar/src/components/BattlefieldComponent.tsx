@@ -5,6 +5,7 @@ import attackSound from '/src/assets/music/damage.mp3';
 import { TowerComponentProps } from './TowerComponent';
 import { DefenseTower } from '../types';
 import Effect from './Effect'; // Import the Effect component
+import cannonSound from '/src/assets/music/cannon.mp3';
 
 interface BattlefieldProps {
   gameState: GameState;
@@ -44,7 +45,7 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
   let targetTower = isEnemy ? towers.playerTower : towers.enemyTower;
 
   units.forEach((unit, index) => {
-    const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range);
+    const targetIndex = newOpponents.findIndex(opponent => Math.abs(unit.position - opponent.position) <= unit.range - 100);
     if (targetIndex !== -1) {
       const target = newOpponents[targetIndex];
       const { attacked, newHealth } = fight(unit, target, currentTime);
@@ -52,7 +53,7 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
         if (newHealth <= 0) {
           newOpponents.splice(targetIndex, 1);
           if (!isEnemy) {
-            newGameState.gold += Number(unit.goldValue);
+            newGameState.gold += Number(target.goldValue); // Use the target's gold value
           }
         } else {
           newOpponents[targetIndex].health = newHealth;
@@ -80,25 +81,37 @@ function updateUnits(units: Unit[], opponents: Unit[], towers: { playerTower: To
   return { updatedUnits: newUnits, updatedOpponents: newOpponents, updatedTowers: { playerTower: towers.playerTower, enemyTower: towers.enemyTower }, updatedGameState: newGameState };
 }
 
-function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: number, effects: EffectDetail[]): Unit[] {
+function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: number, effects: EffectDetail[], gameState: GameState): Unit[] {
   return units.map(unit => {
     towers.forEach(tower => {
       if (Math.abs(tower.position - unit.position) <= tower.range && currentTime - tower.lastAttackTime >= tower.attackSpeed) {
         const attackDamage = tower.attack;
-        unit.health -= attackDamage;
-        tower.lastAttackTime = currentTime;
-
+    
         effects.push({
-          startX: 250,
-          startY: 500, 
+          startX: 260,
+          startY: 530,
           endX: unit.position + 20,
-          endY: 800 
+          endY: 750
         });
+    
+        const sound = new Audio(cannonSound);
+        sound.play();
+    
+        setTimeout(() => {
+          unit.health -= attackDamage;
+          if (unit.health <= 0) {
+            gameState.gold += unit.goldValue; // Award gold based on the killed unit's value
+          }
+        }, 500);
+    
+        tower.lastAttackTime = currentTime;
       }
     });
+    
     return unit;
   }).filter(unit => unit.health > 0);
 }
+
 
 
 
@@ -111,7 +124,7 @@ const BattlefieldComponent: React.FC<BattlefieldProps> = ({ gameState, updateGam
       let newEffects: EffectDetail[] = [];
 
       // Towers attack enemy units first, creating effects
-      let updatedEnemyUnits = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime, newEffects);
+      let updatedEnemyUnits = attackWithTowers(gameState.defenseTowers, gameState.enemyUnits, currentTime, newEffects, gameState);
 
       // Then update units' interactions
       const { updatedUnits: newUpdatedEnemyUnits1, updatedOpponents: updatedPlayerUnits, updatedGameState } = updateUnits(updatedEnemyUnits, gameState.playerUnits, { playerTower: gameState.playerTower, enemyTower: gameState.enemyTower }, currentTime, true, gameState);

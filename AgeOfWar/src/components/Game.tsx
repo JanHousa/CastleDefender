@@ -16,9 +16,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 50, goldValue: 20, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 15, cost: 70, goldValue: 40, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 300, goldValue: 200, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 20, imageUrl: '/src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 150, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 30, imageUrl: '/src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 250, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: '/src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
@@ -34,13 +34,13 @@ const unitsByEvolution: UnitsByEvolution = {
 
 
 const availableTowers: DefenseTower[] = [
-  { id: 1, type: 'Catapult', cost: 300, attack: 5, range: 600, position: 0, imageUrl: '/src/assets/images/catapult.png', attackSpeed: 1000, lastAttackTime: 0 },
-  { id: 2, type: 'Cannon', cost: 500, attack: 50, range: 600, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 1000, lastAttackTime: 0 },
+  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 600, position: 0, imageUrl: '/src/assets/images/catapult.png', attackSpeed: 2000, lastAttackTime: 0 },
+  { id: 2, type: 'Cannon', cost: 500, attack: 80, range: 700, position: 0, imageUrl: '/src/assets/images/cannon.png', attackSpeed: 2000, lastAttackTime: 0 },
 ];
 
 const initialGameState: GameState = {
   units: unitsByEvolution[1], 
-  gold: 2000,
+  gold: 100,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -74,7 +74,7 @@ const Game: React.FC = () => {
   const goldInterval = setInterval(() => {
     setGameState((prevState) => ({
       ...prevState,
-      gold: prevState.gold + 1,
+      gold: prevState.gold + 2,
     }));
   }, 1000); 
 
