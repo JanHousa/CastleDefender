@@ -404,7 +404,7 @@ body{
   border-radius: 50%;
   background-color: rgb(51, 51, 51);
   z-index: 999;
-  animation: moveEffect 1s ease-out forwards, shadowEffect 1s ease-out forwards;
+  animation: moveEffect 0.5s ease-out forwards, shadowEffect 0.5s ease-out forwards;
 }
 
 @keyframes moveEffect {

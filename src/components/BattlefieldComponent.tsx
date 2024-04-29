@@ -86,32 +86,38 @@ function attackWithTowers(towers: DefenseTower[], units: Unit[], currentTime: nu
     towers.forEach(tower => {
       if (Math.abs(tower.position - unit.position) <= tower.range && currentTime - tower.lastAttackTime >= tower.attackSpeed) {
         const attackDamage = tower.attack;
-    
+
         effects.push({
           startX: 260,
           startY: 530,
           endX: unit.position + 20,
           endY: 750
         });
-    
-        const sound = new Audio(cannonSound);
-        sound.play();
-    
-        setTimeout(() => {
-          unit.health -= attackDamage;
-          if (unit.health <= 0) {
-            gameState.gold += unit.goldValue; // Award gold based on the killed unit's value
-          }
-        }, 800);
-    
+
+
+          const sound = new Audio(cannonSound);
+          sound.play();
+
+        
+        // Apply attack immediately
+        unit.health -= attackDamage;
+        if (unit.health <= 0) {
+          gameState.gold += unit.goldValue; // Award gold synchronously
+        }
+
+        // Push effects to be handled or visualized later
+       
+
+        // Play sound with delay (visual/audio effects only)
+        
+
         tower.lastAttackTime = currentTime;
       }
     });
-    
-    return unit;
-  }).filter(unit => unit.health > 0);
-}
 
+    return unit;
+  }).filter(unit => unit.health > 0);  // Remove any units that have died
+}
 
 
 

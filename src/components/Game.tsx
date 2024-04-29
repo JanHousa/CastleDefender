@@ -37,14 +37,14 @@ const unitsByEvolution: UnitsByEvolution = {
 
 
 const availableTowers: DefenseTower[] = [
-  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 600, position: 0, imageUrl: './src/assets/images/catapult.png', attackSpeed: 2000, lastAttackTime: 0 },
+  { id: 1, type: 'Catapult', cost: 300, attack: 50, range: 700, position: 0, imageUrl: './src/assets/images/catapult.png', attackSpeed: 2000, lastAttackTime: 0 },
   { id: 2, type: 'Cannon', cost: 500, attack: 80, range: 700, position: 0, imageUrl: './src/assets/images/cannon.png', attackSpeed: 2000, lastAttackTime: 0 },
 ];
 
 
 export const getInitialGameState = () => ({
   units: unitsByEvolution[1],
-  gold: 150,
+  gold: 1500,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -209,7 +209,7 @@ const spawnUnit = (unitType: string) => {
 
   // Evoluce
   const evolve = () => {
-    const costOfEvolution = 100;
+    const costOfEvolution = 500;
     if (gameState.gold >= costOfEvolution && unitsByEvolution[gameState.evolutionLevel + 1]) {
       setGameState(prevState => ({
         ...prevState,
@@ -257,7 +257,7 @@ const spawnUnit = (unitType: string) => {
           
 
       <div className="evolve-button">
-        <button onClick={evolve}>Evoluce (Stojí 100 Gold)</button>
+        <button onClick={evolve}>Evoluce (Stojí 500 Gold)</button>
       </div>
     </header>
       <div className="game-area" style={{ borderColor: gameState.baseColor }}>
@@ -309,6 +309,7 @@ const spawnUnit = (unitType: string) => {
       )}
 
         </div>  
+
       </div>
 
 
