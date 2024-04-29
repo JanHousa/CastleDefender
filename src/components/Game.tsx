@@ -41,31 +41,39 @@ const availableTowers: DefenseTower[] = [
   { id: 2, type: 'Cannon', cost: 500, attack: 80, range: 700, position: 0, imageUrl: './src/assets/images/cannon.png', attackSpeed: 2000, lastAttackTime: 0 },
 ];
 
-const initialGameState: GameState = {
-  units: unitsByEvolution[1], 
+
+export const getInitialGameState = () => ({
+  units: unitsByEvolution[1],
   gold: 150,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
-  baseColor: 'gray', 
-  lastSpawnTime: Date.now(), 
-  unitQueue: [], 
+  baseColor: 'gray',
+  lastSpawnTime: Date.now(),
+  unitQueue: [],
   enemyUnits: [],
   enemyGold: 1000,
   enemyEvolutionLevel: 1,
   defenseTowers: [],
-  unitsByEvolution: unitsByEvolution, 
-  effects: [], 
+  unitsByEvolution: unitsByEvolution,
+  effects: [],
   enemyHealth: 100,
   playerTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: false, position: 300 },
   enemyTower: { health: 300, maxHealth: 300, evolutionLevel: 1, isEnemy: true, position: 1600 },
   attackingTargets: [],
-};
+});
 
 //
 
-const Game: React.FC<{ onEndGame: () => void }> = ({ onEndGame }) => {
-  const [gameState, setGameState] = useState<GameState>(initialGameState);
+interface GameProps {
+  gameState: GameState;
+  updateGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  onEndGame: () => void;
+}
+
+
+const Game: React.FC<GameProps> = ({onEndGame }) => {
+  const [gameState, setGameState] = useState<GameState>(getInitialGameState);
   const [showTowerSelection, setShowTowerSelection] = useState(false);
 
   //TOGGLE TOWER SELECTION
