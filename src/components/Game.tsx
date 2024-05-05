@@ -17,20 +17,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/knight_icon.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/archer_icon.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/animations/berserk/attack/0.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/icons/knight_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/icons/archer_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/icons/berserk_ico.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
-    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 200, imageUrl: './src/assets/images/animations/assasin/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 1, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: './src/assets/images/animations/warrior/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 1, type: 'goldenguard', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 200, imageUrl: './src/assets/images/animations/goldenguard/attack/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 400, imageUrl: './src/assets/images/icons/assasin_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 600, imageUrl: './src/assets/images/icons/warrior_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'goldenguard', health: 500, maxHealth: 500, attack: 80, cost: 600, goldValue: 800, imageUrl: './src/assets/images/icons/goldenguard_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   3: [
-    { id: 1, type: 'knight', health: 100, maxHealth: 100, attack: 20, cost: 50, goldValue: 200, imageUrl: './src/assets/images/animations/knight/walk/0.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-
+    { id: 1, type: 'elf', health: 650, maxHealth: 650, attack: 80, cost: 700, goldValue: 1200, imageUrl: './src/assets/images/icons/elf_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 2, type: 'druid', health: 700, maxHealth: 700, attack: 130, cost: 1200, goldValue: 2000, imageUrl: './src/assets/images/icons/druid_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'wizzard', health: 2000, maxHealth: 2000, attack: 200, cost: 10000, goldValue: 15000, imageUrl: './src/assets/images/icons/wizzard_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
   ],
 
 };
@@ -44,7 +45,7 @@ const availableTowers: DefenseTower[] = [
 
 export const getInitialGameState = () => ({
   units: unitsByEvolution[1],
-  gold: 1500,
+  gold: 150,
   health: 100,
   playerUnits: [],
   evolutionLevel: 1,
@@ -111,7 +112,6 @@ useEffect(() => {
   const handleTowerPurchase = (tower: DefenseTower, slotId: number) => {
     const isSlotOccupied = gameState.defenseTowers.some((t) => t.slotId === slotId);
     if (isSlotOccupied) {
-      alert('A tower is already present in this slot!');
       return;
     }
 
@@ -122,7 +122,6 @@ useEffect(() => {
         defenseTowers: [...prevState.defenseTowers, { ...tower, slotId }],
       }));
     } else {
-      alert('Not enough gold to purchase this tower!');
     }
   };
 
@@ -145,7 +144,6 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
  const sellTower = (slotId: number) => {
   const towerIndex = gameState.defenseTowers.findIndex((t) => t.slotId === slotId);
   if (towerIndex === -1) {
-    alert('No tower to sell in this slot!');
     return;
   }
 
@@ -189,7 +187,6 @@ const updateGameState: (newStateOrUpdater: GameState | ((prevState: GameState) =
 
 const spawnUnit = (unitType: string) => {
   if (gameState.unitQueue.length >= 5) {
-    alert('Fronta je plná!');
     return;
   }
 
@@ -203,27 +200,27 @@ const spawnUnit = (unitType: string) => {
       unitQueue: [...prevState.unitQueue, { ...unitTemplate, addedToQueueAt: Date.now() }], // Přidání času
     }));
   } else {
-    alert('Nedostatek zlata nebo chybný typ jednotky!');
   }
 };
 
   // Evoluce
   const evolve = () => {
-    const costOfEvolution = 500;
+    const costOfEvolution = gameState.evolutionLevel === 1 ? 500 : 3000;
     if (gameState.gold >= costOfEvolution && unitsByEvolution[gameState.evolutionLevel + 1]) {
       setGameState(prevState => ({
         ...prevState,
         gold: prevState.gold - costOfEvolution,
         evolutionLevel: prevState.evolutionLevel + 1,
-
         towerImage: getImageUrlForTower(prevState.evolutionLevel + 1),
         units: unitsByEvolution[prevState.evolutionLevel + 1] || [],
       }));
     } else {
-      alert('Nedostatek zlata pro evoluci nebo neexistuje další úroveň.');
     }
   };
-  
+
+  const getCurrentCostOfEvolution = () => {
+    return gameState.evolutionLevel === 1 ? 500 : 3000;
+  };
 
   const getImageUrlForTower = (evolutionLevel: number): string => {
     const images = [
@@ -253,11 +250,11 @@ const spawnUnit = (unitType: string) => {
         ))}
       </div>
 
-      <MusicPlayer></MusicPlayer>
-          
+      
+      <MusicPlayer />
 
       <div className="evolve-button">
-        <button onClick={evolve}>Evoluce (Stojí 500 Gold)</button>
+      <button onClick={evolve}>Evoluce (Stojí {getCurrentCostOfEvolution()} Gold)</button>
       </div>
     </header>
       <div className="game-area" style={{ borderColor: gameState.baseColor }}>
@@ -279,7 +276,7 @@ const spawnUnit = (unitType: string) => {
          <BattlefieldComponent gameState={gameState} updateGameState={updateGameState} />
       <EnemyAIComponent gameState={gameState} updateGameState={setGameState} unitsByEvolution={unitsByEvolution} />
 
-
+       
         
      
       <div className="player-base">    

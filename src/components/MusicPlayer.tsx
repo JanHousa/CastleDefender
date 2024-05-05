@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import playImage from '/src/assets/images/sound_on.png'; 
 import pauseImage from '/src/assets/images/sound_off.png';
 
 const MusicPlayer: React.FC = () => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const audioRef = React.useRef<HTMLAudioElement | null>(null);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        const playAudio = async () => {
+            if (audioRef.current) {
+                try {
+                    await audioRef.current.play();
+                } catch (err) {
+                    console.log("Nepodařilo se automaticky spustit: ", err);
+                    setIsPlaying(false);
+                }
+            }
+        };
+
+        playAudio();
+    }, []);
 
     const togglePlay = () => {
         if (audioRef.current) {
