@@ -31,7 +31,7 @@ const unitsByEvolution: UnitsByEvolution = {
   3: [
     { id: 1, type: 'elf', health: 650, maxHealth: 650, attack: 80, cost: 700, goldValue: 1200, imageUrl: './src/assets/images/icons/elf_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
     { id: 2, type: 'druid', health: 700, maxHealth: 700, attack: 130, cost: 1200, goldValue: 2000, imageUrl: './src/assets/images/icons/druid_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'wizzard', health: 2000, maxHealth: 2000, attack: 200, cost: 10000, goldValue: 15000, imageUrl: './src/assets/images/icons/wizzard_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: 3, type: 'wizzard', health: 4000, maxHealth: 4000, attack: 400, cost: 10000, goldValue: 15000, imageUrl: './src/assets/images/icons/wizzard_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
   ],
 
 };
