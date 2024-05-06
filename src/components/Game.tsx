@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './Game.css';
 import { GameState, DefenseTower, UnitsByEvolution } from '../types';
 import UnitCard from './UnitCard';
-import HealthBar from './HealthBar';
 import BattlefieldComponent from './BattlefieldComponent';
 import EnemyAIComponent from './EnemyAI';
-import UnitsList from './UnitsList';
 import TowerSelectionComponent from './TowerSelection'; // Předpokládá, že máte tuto komponentu
 import DefenseSlot from './DefenseSlot'; // Adjust the path as necessary
-import DefenseTowerComponent from './DefenseTower'; // Adjust the path as necessary
 import TowerComponent from './TowerComponent'; // Adjust the path as necessary
 import MusicPlayer from './MusicPlayer';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,21 +14,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: 1, type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/icons/knight_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/icons/archer_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/icons/berserk_ico.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "1", type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/icons/knight_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "2", type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/icons/archer_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "3", type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/icons/berserk_ico.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   2: [
-    { id: 1, type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 400, imageUrl: './src/assets/images/icons/assasin_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 600, imageUrl: './src/assets/images/icons/warrior_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'goldenguard', health: 500, maxHealth: 500, attack: 80, cost: 600, goldValue: 800, imageUrl: './src/assets/images/icons/goldenguard_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "1", type: 'assasin', health: 300, maxHealth: 300, attack: 40, cost: 150, goldValue: 400, imageUrl: './src/assets/images/icons/assasin_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "2", type: 'warrior', health: 500, maxHealth: 500, attack: 60, cost: 500, goldValue: 600, imageUrl: './src/assets/images/icons/warrior_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "3", type: 'goldenguard', health: 500, maxHealth: 500, attack: 80, cost: 600, goldValue: 800, imageUrl: './src/assets/images/icons/goldenguard_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
 
   ],
   3: [
-    { id: 1, type: 'elf', health: 650, maxHealth: 650, attack: 80, cost: 700, goldValue: 1200, imageUrl: './src/assets/images/icons/elf_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 2, type: 'druid', health: 700, maxHealth: 700, attack: 130, cost: 1200, goldValue: 2000, imageUrl: './src/assets/images/icons/druid_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
-    { id: 3, type: 'wizzard', health: 4000, maxHealth: 4000, attack: 400, cost: 10000, goldValue: 15000, imageUrl: './src/assets/images/icons/wizzard_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "1", type: 'elf', health: 650, maxHealth: 650, attack: 80, cost: 700, goldValue: 1200, imageUrl: './src/assets/images/icons/elf_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "2", type: 'druid', health: 700, maxHealth: 700, attack: 130, cost: 1200, goldValue: 2000, imageUrl: './src/assets/images/icons/druid_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "3", type: 'wizzard', health: 4000, maxHealth: 4000, attack: 400, cost: 10000, goldValue: 15000, imageUrl: './src/assets/images/icons/wizzard_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
   ],
 
 };

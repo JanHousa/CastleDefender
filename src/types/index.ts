@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
 import { TowerComponentProps } from '../components/TowerComponent';
 
 export interface Unit {
-  id: number;
+  id: string;
   type: string;
   health: number;
   attack: number;

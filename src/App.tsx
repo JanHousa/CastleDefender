@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Game from './components/Game';
 import Menu from './components/Menu';
 import EndGame from './components/Endgame';
 import { getInitialGameState } from './components/Game'; // Update this path if needed
+import { GameState } from './types';
 
 function App() {
-  const [gameState, setGameState] = useState(getInitialGameState());
+  const [gameState, setGameState] = useState<GameState>(getInitialGameState());
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
 

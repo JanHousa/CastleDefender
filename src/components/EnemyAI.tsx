@@ -8,9 +8,9 @@ function chooseUnitToSpawn(unitsByEvolution: UnitsByEvolution, evolutionLevel: n
     // 150 seconds for evolution level 3, 100 seconds for other levels
     availableUnits = unitsByEvolution[evolutionLevel];
   } else if (timeElapsed >= 30000) { // 30 seconds, can spawn units up to ID 2
-    availableUnits = unitsByEvolution[evolutionLevel].filter(unit => unit.id <= 2);
+    availableUnits = unitsByEvolution[evolutionLevel].filter(unit => parseInt(unit.id) <= 2);
   } else { // Less than 30 seconds, only spawn units with ID 1
-    availableUnits = unitsByEvolution[evolutionLevel].filter(unit => unit.id === 1);
+    availableUnits = unitsByEvolution[evolutionLevel].filter(unit => unit.id === "1");
   }
 
   if (!availableUnits || availableUnits.length === 0) {
