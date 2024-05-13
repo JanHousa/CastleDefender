@@ -10,13 +10,11 @@ import TowerComponent from './TowerComponent'; // Adjust the path as necessary
 import MusicPlayer from './MusicPlayer';
 import { v4 as uuidv4 } from 'uuid';
 
-import knightIcon from './src/assets/images/icons/knight_ico.png';
-
 
 
 const unitsByEvolution: UnitsByEvolution = {
   1: [
-    { id: "1", type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: knightIcon, position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
+    { id: "1", type: 'knight', health: 200, maxHealth: 200, attack: 20, cost: 15, goldValue: 25, imageUrl: './src/assets/images/icons/knight_ico.png', position: 0, attackType: 'melee', range: 90, attackSpeed: 1000, lastAttackTime: 0},
     { id: "2", type: 'archer', health: 100, maxHealth: 100, attack: 20, cost: 20, goldValue: 40, imageUrl: './src/assets/images/icons/archer_ico.png', position: 0, attackType: 'melee', range: 200, attackSpeed: 1000, lastAttackTime: 0},
     { id: "3", type: 'berserk', health: 500, maxHealth: 500, attack: 40, cost: 200, goldValue: 300, imageUrl: './src/assets/images/icons/berserk_ico.png', position: 0, attackType: 'melee', range: 80, attackSpeed: 1000, lastAttackTime: 0},
 
