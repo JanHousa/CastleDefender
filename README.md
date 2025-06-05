@@ -3,7 +3,7 @@
 Remake klasické strategické hry **Age of War**, postavený v moderním prostředí pomocí **React + TypeScript**.
 
 ![Thumbnail](sources/projekt2.jpg)
-[Hru spustíte kliknutím zde](https://janhousa.github.io/ageofwarReact/)
+- [Hru spustíte kliknutím zde](https://janhousa.github.io/ageofwarReact/)
 
 ## 🎮 O hře
 
