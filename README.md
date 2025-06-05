@@ -34,6 +34,6 @@ Hra je rozdělena do **3 evolučních období** – každé z nich přináší n
 
 ```bash
 git clone https://github.com/tvoje-jmeno/castle-defender.git
-cd ageofwarReact
+cd CastleDefender
 npm install
 npm run dev
